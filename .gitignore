@@ -1,0 +1,72 @@
+# ========================================
+# PHP / WEB PROJECT IGNORE
+# ========================================
+
+# Sistema / OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Composer
+/vendor/
+composer.lock
+
+# Archivos de caché
+cache/
+*.cache
+*.tmp
+
+# Archivos de logs
+logs/
+*.log
+
+# Configuración sensible
+config/db.php
+config/config.php
+.env
+.env.local
+.env.*.local
+
+# Subidas de usuario (NO versionar)
+uploads/
+uploads/thumbnails/
+uploads/avatars/
+uploads/videos/
+
+# Librerías JS/CSS que no deben subirse manualmente
+assets/libs/
+node_modules/
+
+# Archivos compilados/minificados
+*.min.js
+*.min.css
+*.map
+
+# Backups
+*.bak
+*.old
+*.save
+
+# Sistema PHP
+*.swp
+*.swm
+*.swx
+*.pid
+
+# Archivos temporales de PHP
+session/
+tmp/
+temp/
+
+# Cache de frameworks
+storage/
+bootstrap/cache/
+
+# Documentación
+ZZZ-structure.md
+ZZZ-TODO.md

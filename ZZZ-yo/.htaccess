@@ -1,0 +1,21 @@
+# Activar el motor de reescritura
+
+RewriteEngine On
+
+## --- MANEJO DE ERRORES 404 (Página no encontrada) ---
+
+ErrorDocument 404 /proyecto-final-web/construction.php
+
+## ErrorDocument 404 /construction.php
+
+```apache
+# --- MANEJO DE ERRORES 404 (Página no encontrada) ---
+
+# Si estás en XAMPP (Localhost)
+# La ruta debe incluir la carpeta del proyecto
+ErrorDocument 404 /proyecto-final-web/construction.php
+
+# Si estás en InfinityFree (Producción)
+# Si subes los archivos directo a la raiz (htdocs)
+# ErrorDocument 404 /construction.php
+```

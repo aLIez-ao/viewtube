@@ -33,10 +33,10 @@ config/config.php
 .env.*.local
 
 # Subidas de usuario (NO versionar)
-uploads/
-uploads/thumbnails/
-uploads/avatars/
-uploads/videos/
+#uploads/
+#uploads/thumbnails/
+#uploads/avatars/
+#uploads/videos/
 
 # Librerías JS/CSS que no deben subirse manualmente
 assets/libs/
@@ -68,4 +68,4 @@ storage/
 bootstrap/cache/
 
 # Documentación
-ZZZ-yo/
+# ZZZ-yo/

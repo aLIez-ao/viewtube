@@ -1,0 +1,164 @@
+/* assets/css/navbar.css */
+
+nav {
+    background-color: #fff !important;
+    color: #0f0f0f;
+    box-shadow: none !important;
+    border-bottom: 1px solid #e5e5e5;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    height: 64px; 
+    line-height: 64px;
+}
+
+/* Lógica Responsive: Navbar ocupa todo el ancho en PC */
+@media only screen and (min-width: 993px) {
+    nav {
+        width: 100%;
+        padding-left: 0; 
+    }
+}
+
+.nav-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 100%;
+    padding: 0 20px;
+    width: 100%;
+}
+
+/* --- IZQUIERDA --- */
+.nav-left {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    min-width: 180px;
+}
+
+.menu-btn {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    color: #0f0f0f;
+    margin-right: 20px;
+    cursor: pointer;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    float: none !important;
+    line-height: normal !important;
+}
+.menu-btn:hover { background-color: #f2f2f2; }
+.menu-btn i { height: 28px; line-height: 28px; font-size: 28px; } 
+
+.brand-logo-custom {
+    display: flex;
+    align-items: center;
+    color: #0f0f0f;
+    font-size: 22px;
+    font-weight: 700; 
+    letter-spacing: -0.5px;
+    text-decoration: none;
+}
+.brand-logo-custom img { height: 28px; margin-right: 6px; } 
+
+/* --- CENTRO (BUSCADOR) --- */
+.nav-center {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    max-width: 720px;
+    margin: 0 20px;
+}
+
+.search-box {
+    display: flex;
+    width: 100%;
+    height: 44px; 
+}
+
+.search-input-wrapper {
+    flex: 1;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-right: none;
+    border-top-left-radius: 40px;
+    border-bottom-left-radius: 40px;
+    padding: 0 16px;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.02);
+    display: flex;
+    align-items: center;
+}
+
+.search-input-wrapper input {
+    border: none !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+    height: 100% !important;
+    padding: 0 !important;
+    font-size: 17px;
+}
+
+.search-btn {
+    width: 70px;
+    background-color: #f8f8f8;
+    border: 1px solid #ccc;
+    border-top-right-radius: 40px;
+    border-bottom-right-radius: 40px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #606060;
+}
+.search-btn:hover { background-color: #f0f0f0; }
+.search-btn i { font-size: 26px; }
+
+/* --- DERECHA --- */
+.nav-right {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-shrink: 0;
+    min-width: 160px; 
+}
+
+.icon-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    color: #0f0f0f;
+    margin-right: 8px;
+    cursor: pointer;
+}
+.icon-btn:hover { background-color: #f2f2f2; }
+.icon-btn i { font-size: 26px; }
+
+.login-btn {
+    display: flex;
+    align-items: center;
+    border: 1px solid #e5e5e5;
+    color: #065fd4;
+    border-radius: 20px;
+    padding: 0 18px;
+    height: 40px;
+    font-weight: 600;
+    font-size: 15px;
+    text-decoration: none;
+    background-color: transparent;
+    white-space: nowrap;
+}
+.login-btn:hover {
+    background-color: #def1ff;
+    border-color: #def1ff;
+}
+.login-btn i {
+    font-size: 24px;
+    margin-right: 8px;
+}

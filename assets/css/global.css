@@ -1,0 +1,23 @@
+/* assets/css/global.css */
+
+/* Estructura General */
+body {
+    background-color: #f9f9f9;
+    padding-top: 64px; /* Espacio para el Navbar */
+    margin: 0;
+    font-family: "Roboto", "Arial", sans-serif;
+}
+
+/* Lógica Responsive: Espacio para Sidebar en PC */
+@media only screen and (min-width: 993px) {
+    body {
+        padding-left: 240px;
+    }
+}
+
+/* Clases de utilidad */
+.flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

@@ -2,9 +2,11 @@
 /* includes/components/video_card.php
    Requisitos: Debe existir una variable $video con los datos de la BD.
 */
+
+// TODO: targetas genericas no procedurales
 if (!isset($video)) return; 
 ?>
-// TODO: targetas genericas no procedurales
+
 <div class="video-card">
     <a href="watch.php?id=<?php echo $video['id']; ?>">
         <div class="thumbnail-container">

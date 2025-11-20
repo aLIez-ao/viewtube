@@ -10,22 +10,22 @@ require_once 'includes/header.php';
     <h4>Bienvenido a ViewTube</h4>
     <p>Si ves la barra roja arriba y el footer rojo abajo, ¡la estructura funciona!</p>
     
-    <div class="row">
-        <div class="col s12 m6">
-            <div class="card blue-grey darken-1">
-                <div class="card-content white-text">
-                    <span class="card-title">Prueba de Base de Datos</span>
-                    <p>
-                        <?php 
-                        if(isset($conn) && $conn->ping()) {
-                            echo "✅ Conexión a MySQL exitosa: " . $dbname;
-                        } else {
-                            echo "❌ Error de conexión.";
-                        }
-                        ?>
-                    </p>
-                </div>
-            </div>
+    <div class="col s12 m6">
+    <div class="card blue-grey darken-1">
+        <div class="card-content white-text">
+            <span class="card-title">Estado del Sistema</span>
+            <p>
+                <?php 
+                if(isset($conn) && $conn->connect_error == null) {
+                    $resultado = $conn->query("SELECT DATABASE()");
+                    $nombre_db = $resultado->fetch_row()[0];
+                    
+                    echo "✅ Conexión exitosa a: <strong>" . $nombre_db . "</strong>";
+                } else {
+                    echo "❌ Error: No hay conexión.";
+                }
+                ?>
+            </p>
         </div>
     </div>
 </div>

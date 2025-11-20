@@ -1,0 +1,177 @@
+/* assets/css/home.css */
+
+/* --- Grid Responsivo Personalizado (Mejor que las Columnas de Materialize) --- */
+.video-grid {
+    display: grid;
+    /* Ajusta el tamaño mínimo de la tarjeta y el número de columnas */
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
+    gap: 20px; /* Espacio entre tarjetas */
+    padding: 20px 0;
+}
+
+/* Tarjeta de Video Individual (Contenedor principal) */
+.video-card {
+    display: flex; /* Para que el menú de 3 puntos (si lo añades) se alinee */
+    flex-direction: column;
+    cursor: pointer;
+    background-color: transparent;
+    text-decoration: none; /* Asegura que el enlace no tenga subrayado */
+    color: inherit; /* Hereda el color base, no el azul de los enlaces */
+}
+
+/* Contenedor de la Miniatura (16:9) */
+.thumbnail-container {
+    position: relative;
+    width: 100%;
+    padding-top: 56.25%; /* Relación de aspecto 16:9 (altura = 56.25% del ancho) */
+    overflow: hidden;
+    border-radius: 10px; /* Bordes redondeados sutiles */
+    background-color: #e0e0e0; /* Gris claro de fondo mientras carga */
+}
+
+.thumbnail-container img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ajusta la imagen sin distorsionarla */
+    transition: border-radius 0.2s ease-in-out; /* Animación de bordes */
+}
+
+/* Efecto al pasar el mouse */
+.video-card:hover .thumbnail-container img {
+    border-radius: 0; /* Bordes rectos al pasar el mouse */
+}
+
+/* Badge de Duración (Parte inferior derecha de la miniatura) */
+.duration-badge {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    background-color: rgba(0, 0, 0, 0.8); /* Fondo negro semitransparente */
+    color: white;
+    font-size: 12px;
+    padding: 3px 6px;
+    border-radius: 4px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
+
+/* --- Información del Video (Debajo de la miniatura) --- */
+.video-info {
+    display: flex;
+    margin-top: 12px;
+    align-items: flex-start; /* Alinea el avatar con el título */
+    position: relative;
+}
+
+/* Avatar del Canal */
+.channel-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%; /* Circular */
+    background-color: #eee;
+    margin-right: 12px;
+    flex-shrink: 0; /* Evita que el avatar se encoja */
+    overflow: hidden;
+}
+.channel-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Detalles del Texto (Título, Canal, Vistas) */
+.video-details {
+    flex-grow: 1; /* Ocupa el espacio restante */
+    display: flex;
+    flex-direction: column;
+}
+
+.video-title {
+    font-size: 16px;
+    font-weight: 600; /* Más negrita */
+    color: #0f0f0f; /* Color de texto principal */
+    line-height: 1.4rem;
+    margin-bottom: 4px;
+    text-decoration: none; /* Asegura que el enlace no tenga subrayado */
+    /* Limitar a 2 líneas si el título es muy largo */
+    display: -webkit-box;
+    line-clamp: 2;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+.video-title:hover {
+    color: #0f0f0f; /* Sin cambio de color al hover para el título */
+}
+
+.channel-name, .video-meta {
+    font-size: 14px;
+    color: #606060; /* Color gris para información secundaria */
+    line-height: 1.2rem;
+    margin-bottom: 2px;
+}
+.channel-name {
+    text-decoration: none; /* Para el enlace del canal */
+}
+.channel-name:hover {
+    color: #0f0f0f; /* Oscurece al pasar el mouse por el nombre del canal */
+}
+
+/* Icono de verificado */
+.channel-name .material-icons {
+    font-size: 14px; /* Pequeño y discreto */
+    vertical-align: middle;
+    margin-left: 4px;
+    color: #606060; /* Color gris */
+}
+
+/* Icono de menú de 3 puntos (Opcional, para futuros ajustes) */
+.video-menu {
+    position: absolute;
+    top: 0;
+    right: 0;
+    color: #606060;
+    opacity: 0; /* Invisible por defecto */
+    transition: opacity 0.2s;
+}
+.video-card:hover .video-menu {
+    opacity: 1; /* Visible al pasar el mouse por la tarjeta */
+}
+
+
+/* --- Barra de Categorías (Chips) --- */
+.categories-bar {
+    border-bottom: 1px solid #e5e5e5; /* Separador sutil */
+    padding-bottom: 10px !important; /* Espacio debajo de los chips */
+}
+.categories-bar .chip {
+    background-color: #e5e5e5;
+    color: #0f0f0f;
+    font-weight: 500;
+    font-size: 14px;
+    height: 32px;
+    line-height: 32px;
+    padding: 0 12px;
+    border-radius: 16px;
+    transition: background-color 0.2s;
+}
+.categories-bar .chip:hover {
+    background-color: #d0d0d0;
+    cursor: pointer;
+}
+/* Chip "Todos" activo */
+.categories-bar .chip.black {
+    background-color: #0f0f0f !important;
+    color: #fff !important;
+}
+
+/* Estilo para el título de la sección "Recomendados" */
+h5 {
+    font-weight: 700 !important; /* Negrita */
+    color: #0f0f0f;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}

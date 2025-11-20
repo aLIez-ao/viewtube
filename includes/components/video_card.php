@@ -1,22 +1,27 @@
 <?php
-/* includes/components/video_card.php
-   Requisitos: Debe existir una variable $video con los datos de la BD.
-*/
-
-// TODO: targetas genericas no procedurales
 if (!isset($video)) return; 
 ?>
 
 <div class="video-card">
     <a href="watch.php?id=<?php echo $video['id']; ?>">
         <div class="thumbnail-container">
-            <img src="https://img.youtube.com/vi/<?php echo $video['youtube_id']; ?>/mqdefault.jpg" alt="Miniatura de video" loading="lazy">
-            <span class="duration-badge">10:00</span> </div>
+            <!-- Usamos la URL guardada o generamos una fallback -->
+            <?php 
+                $thumb = !empty($video['thumbnail_url']) ? $video['thumbnail_url'] : "https://img.youtube.com/vi/{$video['youtube_id']}/mqdefault.jpg";
+            ?>
+            <img src="<?php echo $thumb; ?>" alt="Miniatura" loading="lazy">
+            
+            <!-- Duración formateada (ej. 10:30) -->
+            <span class="duration-badge"><?php echo formatDuration($video['duration']); ?></span>
+        </div>
     </a>
 
     <div class="video-info">
         <div class="channel-avatar">
-            <a href="#!"><img src="https://ui-avatars.com/api/?name=<?php echo urlencode($video['username']); ?>&background=random&color=fff&size=64" alt="Avatar de <?php echo $video['username']; ?>"></a>
+            <a href="#!">
+                <!-- Avatar del usuario dueño del canal -->
+                <img src="https://ui-avatars.com/api/?name=<?php echo urlencode($video['channel_name']); ?>&background=random&color=fff&size=64" alt="Avatar">
+            </a>
         </div>
         
         <div class="video-details">
@@ -24,12 +29,14 @@ if (!isset($video)) return;
                 <?php echo $video['title']; ?>
             </a>
             
-            <a href="#!" class="channel-name"> <?php echo $video['username']; ?>
+            <a href="#!" class="channel-name">
+                <?php echo $video['channel_name']; ?> <!-- Ahora usamos el nombre del CANAL -->
                 <i class="material-icons tiny" style="vertical-align: middle; font-size: 14px; margin-left: 2px;">check_circle</i>
             </a>
             
             <div class="video-meta">
-                <?php echo number_format($video['views']); ?> vistas • hace 1 día </div>
+                <?php echo number_format($video['views']); ?> vistas • <?php echo timeAgo($video['created_at']); ?>
+            </div>
         </div>
         
         <div class="video-menu">

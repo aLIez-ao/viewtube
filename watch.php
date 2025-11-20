@@ -1,37 +1,49 @@
 <?php
-// watch.php
 require_once 'config/db.php';
+require_once 'includes/functions.php'; // Agregamos funciones de tiempo/formato
 
-// 1. Validar ID
+// Validar ID
 if (!isset($_GET['id']) || empty($_GET['id'])) {
     header("Location: index.php");
     exit();
 }
 
-$video_id = (int)$_GET['id']; // Convertir a entero por seguridad
+$video_id = (int)$_GET['id'];
+$page_layout = 'watch';
 
-// 2. Obtener datos del video PRINCIPAL
-$sql = "SELECT v.*, u.username, u.avatar, u.id as author_id 
+// 1. QUERY PRINCIPAL (Actualizada para la nueva DB)
+// Videos -> Canales -> Usuarios
+$sql = "SELECT 
+            v.*, 
+            c.id AS channel_id,
+            c.name AS channel_name,
+            c.subscribers_count,
+            u.avatar,
+            u.username
         FROM videos v 
-        JOIN users u ON v.user_id = u.id 
+        JOIN channels c ON v.channel_id = c.id 
+        JOIN users u ON c.user_id = u.id 
         WHERE v.id = $video_id";
+
 $result = $conn->query($sql);
 
 if ($result->num_rows == 0) {
-    // Video no encontrado -> Redirigir a 404 (construcción)
     header("Location: construction.php");
     exit();
 }
 
 $video = $result->fetch_assoc();
 
-// 3. Obtener videos RELACIONADOS (Sidebar)
-// Traemos 10 videos aleatorios que NO sean el actual
-$sql_related = "SELECT v.*, u.username 
+// 2. QUERY RELACIONADOS (Actualizada para la nueva DB)
+// Traemos videos distintos al actual, uniendo con canales
+$sql_related = "SELECT 
+                    v.*, 
+                    c.name AS channel_name 
                 FROM videos v 
-                JOIN users u ON v.user_id = u.id 
+                JOIN channels c ON v.channel_id = c.id 
                 WHERE v.id != $video_id 
                 ORDER BY RAND() LIMIT 10";
+
 $related_result = $conn->query($sql_related);
 
 // --- INICIO DEL HTML ---
@@ -43,6 +55,7 @@ require_once 'includes/header.php';
 <div class="container-fluid" style="padding-top: 24px; max-width: 1600px;">
     <div class="row">
         
+        <!-- COLUMNA IZQUIERDA: REPRODUCTOR -->
         <div class="col s12 l8">
             
             <div class="video-container-wrapper">
@@ -60,12 +73,16 @@ require_once 'includes/header.php';
                 
                 <div class="channel-info-block">
                     <div class="channel-avatar-watch">
-                         <img src="https://ui-avatars.com/api/?name=<?php echo urlencode($video['username']); ?>&background=random&color=fff&size=64" alt="Avatar">
+                         <!-- Usamos el avatar del usuario dueño del canal -->
+                         <img src="https://ui-avatars.com/api/?name=<?php echo urlencode($video['channel_name']); ?>&background=random&color=fff&size=64" alt="Avatar">
                     </div>
                     <div class="channel-text">
-                        <a href="#!" style="color: inherit;"> <h6><?php echo $video['username']; ?></h6>
+                        <a href="#!" style="color: inherit;">
+                            <!-- IMPORTANTE: Ahora mostramos channel_name, no username -->
+                            <h6><?php echo $video['channel_name']; ?></h6>
                         </a>
-                        <span>1.2 M suscriptores</span>
+                        <!-- Mostramos suscriptores reales de la BD -->
+                        <span><?php echo number_format($video['subscribers_count']); ?> suscriptores</span>
                     </div>
                     <button class="btn btn-subscribe waves-effect waves-light">Suscribirse</button>
                 </div>
@@ -73,7 +90,7 @@ require_once 'includes/header.php';
                 <div class="actions-buttons">
                     <button class="btn-action waves-effect">
                         <i class="material-icons">thumb_up_alt</i> 
-                        <span style="padding-right: 8px; border-right: 1px solid #ccc; margin-right: 8px;">12k</span>
+                        <span style="padding-right: 8px; border-right: 1px solid #ccc; margin-right: 8px;">0</span>
                         <i class="material-icons">thumb_down_alt</i>
                     </button>
                     
@@ -94,7 +111,8 @@ require_once 'includes/header.php';
             <div class="description-box">
                 <div class="row" style="margin-bottom: 0;">
                     <div class="col s12">
-                        <strong><?php echo number_format($video['views']); ?> vistas • <?php echo date("d M Y", strtotime($video['created_at'])); ?></strong>
+                        <!-- Usamos las funciones de tiempo -->
+                        <strong><?php echo number_format($video['views']); ?> vistas • <?php echo timeAgo($video['created_at']); ?></strong>
                         <div class="description-text">
                             <?php echo nl2br($video['description']); ?>
                         </div>
@@ -108,6 +126,7 @@ require_once 'includes/header.php';
 
         </div>
 
+        <!-- COLUMNA DERECHA: VIDEOS RELACIONADOS -->
         <div class="col s12 l4">
             <?php while($related = $related_result->fetch_assoc()): ?>
                 <?php include 'includes/components/video_card_small.php'; ?>

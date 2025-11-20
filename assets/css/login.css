@@ -1,0 +1,142 @@
+/* assets/css/login.css */
+
+/* Centrado perfecto en pantalla */
+body {
+    background-color: #f0f2f5; /* Gris muy suave */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0;
+    font-family: "Roboto", Arial, sans-serif;
+}
+
+/* La tarjeta blanca */
+.login-card {
+    background-color: white;
+    width: 100%;
+    max-width: 450px; /* Ancho estándar de Google */
+    padding: 48px 40px 36px;
+    border-radius: 8px;
+    border: 1px solid #dadce0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-sizing: border-box;
+}
+
+/* Logo */
+.logo-section {
+    margin-bottom: 10px;
+}
+.logo-section img {
+    height: 40px; /* Tamaño controlado */
+    width: auto;
+}
+
+/* Textos de cabecera */
+.login-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+.login-header h5 {
+    color: #202124;
+    font-size: 24px;
+    font-weight: 500;
+    margin: 10px 0;
+}
+.login-header p {
+    color: #202124;
+    font-size: 16px;
+    margin: 0;
+}
+
+/* Inputs (Cajas de texto) */
+.input-field {
+    width: 100%;
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.input-field input {
+    width: 100%;
+    padding: 13px 15px;
+    border: 1px solid #dadce0;
+    border-radius: 4px;
+    font-size: 16px;
+    box-sizing: border-box;
+    transition: 0.2s;
+    color: #202124;
+}
+
+.input-field input:focus {
+    border: 2px solid #1a73e8; /* Azul Google al hacer clic */
+    outline: none;
+    padding: 12px 14px; /* Ajuste visual por el borde doble */
+}
+
+/* Enlace "Olvidaste tu contraseña" */
+.forgot-link {
+    color: #1a73e8;
+    font-weight: 600;
+    font-size: 14px;
+    text-decoration: none;
+    display: inline-block;
+    margin-top: -10px;
+    margin-bottom: 40px;
+    align-self: flex-start; /* Alinear a la izquierda */
+    border-radius: 4px;
+    padding: 4px 0;
+}
+.forgot-link:hover {
+    background-color: #f6fafe; /* Fondo azul muy clarito al pasar mouse */
+}
+
+/* Fila inferior de botones */
+.action-row {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Enlace "Crear cuenta" */
+.create-account-link {
+    color: #1a73e8;
+    font-weight: 600;
+    font-size: 14px;
+    text-decoration: none;
+    border-radius: 4px;
+    padding: 10px;
+}
+.create-account-link:hover {
+    background-color: #f6fafe;
+}
+
+/* Botón Siguiente */
+.btn-submit {
+    background-color: #1a73e8;
+    color: white;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+.btn-submit:hover {
+    background-color: #1557b0; /* Azul más oscuro */
+    box-shadow: 0 1px 2px rgba(60,64,67,0.3);
+}
+
+/* Mensajes de Error */
+.error-msg {
+    color: #d93025; /* Rojo Google */
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    width: 100%;
+    justify-content: flex-start;
+}

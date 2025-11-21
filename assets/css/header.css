@@ -162,3 +162,121 @@ nav {
     font-size: 24px;
     margin-right: 8px;
 }
+
+/* assets/css/header.css - AGREGAR AL FINAL */
+
+/* --- MENÚ DE USUARIO ESTILO GOOGLE --- */
+
+.user-menu-container {
+    position: relative; /* Para posicionar el dropdown absoluto respecto a esto */
+    margin-left: 15px;
+    margin-right: 10px;
+}
+
+/* Botón circular del navbar */
+.user-avatar-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    object-fit: cover;
+    display: block;
+    /* Opcional: borde transparente al hacer clic */
+}
+.user-avatar-btn:active {
+    transform: scale(0.95);
+}
+
+/* El contenedor del menú desplegable */
+.google-menu-dropdown {
+    display: none; /* Oculto por defecto */
+    position: absolute;
+    top: 45px; /* Justo debajo del avatar */
+    right: 0;
+    width: 300px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2); /* Sombra suave */
+    z-index: 2000;
+    overflow: hidden;
+    border: 1px solid #e5e5e5;
+}
+
+/* Mostrar cuando tenga la clase active */
+.google-menu-dropdown.active {
+    display: block !important; /* El !important fuerza la visibilidad */
+}
+
+/* --- Cabecera del menú --- */
+.menu-header {
+    display: flex;
+    padding: 16px;
+    align-items: flex-start;
+}
+
+.header-avatar {
+    width: 40px;
+    height: 40px;
+    margin-right: 16px;
+}
+.header-avatar img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.header-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.user-name {
+    font-size: 16px;
+    font-weight: 500;
+    color: #0f0f0f;
+    margin: 0;
+    line-height: 1.2;
+}
+
+.view-channel-link {
+    font-size: 14px;
+    color: #065fd4;
+    text-decoration: none;
+    margin-top: 4px;
+}
+.view-channel-link:hover {
+    text-decoration: none;
+}
+
+/* --- Items del menú --- */
+.menu-item {
+    display: flex;
+    align-items: center;
+    padding: 0 16px; /* Menos padding vertical para mejor control */
+    height: 48px;
+    color: #0f0f0f;
+    text-decoration: none;
+    transition: background-color 0.2s;
+    font-size: 14px;
+}
+.menu-item:hover {
+    background-color: #f2f2f2;
+    color: #0f0f0f;
+}
+
+.menu-item i {
+    margin-right: 16px;
+    font-size: 24px;
+    color: #606060;
+    font-weight: lighter;
+}
+
+/* Divisor */
+.menu-divider {
+    height: 1px;
+    background-color: #e5e5e5;
+    margin: 8px 0;
+}

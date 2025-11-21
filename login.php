@@ -60,7 +60,7 @@ if (isset($_SESSION['user_id'])) {
 
             <!-- Enlace "Olvidé contraseña" -->
             <div style="width: 100%; display: flex;">
-                <a href="construction.php" class="forgot-link">¿Olvidaste tu contraseña?</a>
+                <a href="forgot_password.php" class="forgot-link">¿Olvidaste tu contraseña?</a>
             </div>
 
             <!-- Botones de Acción -->

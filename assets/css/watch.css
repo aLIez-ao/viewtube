@@ -145,3 +145,44 @@ h1.video-watch-title {
 }
 .related-channel { font-size: 12px; color: #606060; margin-bottom: 2px; }
 .related-meta { font-size: 12px; color: #606060; }
+/* ... (Mantén el código CSS anterior que ya tenías) ... */
+
+/* --- ESTILOS DE ESTADO (PERSISTENTES) --- */
+
+/* Botón Suscrito (Estado Activo) */
+/* Usamos !important para que Materialize no lo sobrescriba al perder el foco */
+button.btn-subscribe.subscribed {
+    background-color: #f0f0f0 !important;
+    color: #606060 !important;
+    box-shadow: none !important;
+    border: 1px solid #d3d3d3 !important; /* Borde sutil para que se note en fondos blancos */
+}
+
+button.btn-subscribe.subscribed:hover {
+    background-color: #e0e0e0 !important;
+}
+
+/* Botones de Acción (Like/Dislike) Activos */
+button.btn-action.active {
+    background-color: #0f0f0f !important;
+    color: #ffffff !important;
+    border-color: #0f0f0f !important;
+}
+
+/* Aseguramos que el icono dentro también cambie a blanco */
+button.btn-action.active i {
+    color: #ffffff !important;
+}
+
+/* Estilos del Modal (Para asegurar que se vea bien) */
+.modal {
+    border-radius: 12px !important;
+    max-width: 400px !important;
+}
+.modal .modal-content {
+    padding: 24px !important;
+}
+.modal .modal-footer {
+    padding: 8px 24px 24px !important;
+    height: auto !important;
+}

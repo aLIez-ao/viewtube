@@ -1,18 +1,44 @@
 /* assets/css/global.css */
 
-/* Estructura General */
-body {
-    background-color: #f9f9f9;
-    padding-top: 64px; /* Espacio para el Navbar */
-    margin: 0;
-    font-family: "Roboto", "Arial", sans-serif;
+:root {
+    --sidebar-width-open: 240px;
+    --sidebar-width-mini: 72px;
+    --header-height: 64px;
+    --anim-speed: 0.2s;
 }
 
-/* Lógica Responsive: Espacio para Sidebar en PC */
-@media only screen and (min-width: 993px) {
-    body {
-        padding-left: 240px;
+body {
+    background-color: #f9f9f9;
+    padding-top: var(--header-height);
+    margin: 0;
+    font-family: "Roboto", "Arial", sans-serif;
+    transition: padding-left var(--anim-speed) ease-in-out;
+}
+
+/* --- LÓGICA DE LAYOUT: GUIDE (Index, Resultados) --- */
+/* En escritorio, el body tiene padding para dejar espacio al sidebar */
+@media only screen and (min-width: 1201px) {
+    body.layout-guide {
+        padding-left: var(--sidebar-width-open);
     }
+    
+    /* Si está colapsado (Mini Sidebar) */
+    body.layout-guide.is-collapsed {
+        padding-left: var(--sidebar-width-mini);
+    }
+}
+
+/* En tablet/móvil, el sidebar siempre está oculto/overlay por defecto */
+@media only screen and (max-width: 1200px) {
+    body.layout-guide {
+        padding-left: 0;
+    }
+}
+
+/* --- LÓGICA DE LAYOUT: WATCH (Reproductor) --- */
+/* En Watch, el sidebar siempre es flotante, el body NO tiene padding */
+body.layout-watch {
+    padding-left: 0 !important;
 }
 
 /* Clases de utilidad */
@@ -20,4 +46,23 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+/* Overlay oscuro para modo móvil y modo Watch */
+.sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 998; /* Debajo del sidebar (999), encima de todo lo demas */
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity var(--anim-speed), visibility var(--anim-speed);
+}
+
+.sidebar-overlay.active {
+    opacity: 1;
+    visibility: visible;
 }

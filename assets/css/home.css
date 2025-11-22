@@ -1,32 +1,64 @@
 /* assets/css/home.css */
 
-/* --- Grid Responsivo Personalizado (Mejor que las Columnas de Materialize) --- */
+/* --- Grid Responsivo Estricto (3 por fila) --- */
 .video-grid {
     display: grid;
-    /* Ajusta el tamaño mínimo de la tarjeta y el número de columnas */
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
-    gap: 20px; /* Espacio entre tarjetas */
-    padding: 20px 0;
+    /* FORZAMOS 3 columnas en escritorio, sin importar el ancho del sidebar */
+    grid-template-columns: repeat(3, 1fr); 
+    gap: 16px; /* Espacio entre tarjetas (Gap estándar de YouTube) */
+    padding: 24px 0;
 }
 
-/* Tarjeta de Video Individual (Contenedor principal) */
+/* --- RESPONSIVIDAD (Breakpoints) --- */
+
+/* Pantallas Muy Grandes (TV/Monitores anchos > 1600px): Subimos a 4 */
+@media only screen and (min-width: 1600px) {
+    .video-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+/* Laptops pequeñas o Tablets en horizontal (1000px - 1200px) */
+/* Aquí bajamos a 2 para que no se vean muy apretados si abres el sidebar */
+@media only screen and (max-width: 1100px) {
+    .video-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Móviles (menos de 600px) */
+@media only screen and (max-width: 600px) {
+    .video-grid {
+        grid-template-columns: 1fr; /* 1 sola columna vertical */
+    }
+}
+
+
+/* --- DISEÑO DE LA TARJETA (VIDEO CARD) --- */
 .video-card {
-    display: flex; /* Para que el menú de 3 puntos (si lo añades) se alinee */
+    display: flex;
     flex-direction: column;
     cursor: pointer;
     background-color: transparent;
-    text-decoration: none; /* Asegura que el enlace no tenga subrayado */
-    color: inherit; /* Hereda el color base, no el azul de los enlaces */
+    text-decoration: none; /* Sin subrayado */
+    color: inherit;
+    position: relative;
 }
 
-/* Contenedor de la Miniatura (16:9) */
+/* Miniatura */
 .thumbnail-container {
     position: relative;
     width: 100%;
-    padding-top: 56.25%; /* Relación de aspecto 16:9 (altura = 56.25% del ancho) */
+    padding-top: 56.25%; /* Ratio 16:9 */
     overflow: hidden;
-    border-radius: 10px; /* Bordes redondeados sutiles */
-    background-color: #e0e0e0; /* Gris claro de fondo mientras carga */
+    border-radius: 12px; /* Bordes redondeados modernos */
+    background-color: #e0e0e0; /* Gris de carga */
+    transition: border-radius 0.2s;
+}
+
+/* Al hacer hover, en YouTube moderno los bordes se ponen rectos (opcional, aquí mantenemos redondeado o lo cambiamos) */
+.video-card:hover .thumbnail-container {
+    border-radius: 0; 
 }
 
 .thumbnail-container img {
@@ -35,34 +67,28 @@
     left: 0;
     width: 100%;
     height: 100%;
-    object-fit: cover; /* Ajusta la imagen sin distorsionarla */
-    transition: border-radius 0.2s ease-in-out; /* Animación de bordes */
+    object-fit: cover;
 }
 
-/* Efecto al pasar el mouse */
-.video-card:hover .thumbnail-container img {
-    border-radius: 0; /* Bordes rectos al pasar el mouse */
-}
-
-/* Badge de Duración (Parte inferior derecha de la miniatura) */
+/* Badge de Duración */
 .duration-badge {
     position: absolute;
-    bottom: 8px;
-    right: 8px;
-    background-color: rgba(0, 0, 0, 0.8); /* Fondo negro semitransparente */
+    bottom: 6px;
+    right: 6px;
+    background-color: rgba(0, 0, 0, 0.8);
     color: white;
     font-size: 12px;
+    font-weight: 500;
     padding: 3px 6px;
     border-radius: 4px;
-    font-weight: 500;
     letter-spacing: 0.5px;
 }
 
-/* --- Información del Video (Debajo de la miniatura) --- */
+/* --- Información del Video --- */
 .video-info {
     display: flex;
     margin-top: 12px;
-    align-items: flex-start; /* Alinea el avatar con el título */
+    padding-right: 24px; /* Espacio a la derecha para el menú de 3 puntos */
     position: relative;
 }
 
@@ -70,10 +96,9 @@
 .channel-avatar {
     width: 36px;
     height: 36px;
-    border-radius: 50%; /* Circular */
-    background-color: #eee;
+    border-radius: 50%;
     margin-right: 12px;
-    flex-shrink: 0; /* Evita que el avatar se encoja */
+    flex-shrink: 0;
     overflow: hidden;
 }
 .channel-avatar img {
@@ -82,96 +107,92 @@
     object-fit: cover;
 }
 
-/* Detalles del Texto (Título, Canal, Vistas) */
+/* Textos */
 .video-details {
-    flex-grow: 1; /* Ocupa el espacio restante */
     display: flex;
     flex-direction: column;
 }
 
 .video-title {
     font-size: 16px;
-    font-weight: 600; /* Más negrita */
-    color: #0f0f0f; /* Color de texto principal */
+    font-weight: 600;
+    color: #0f0f0f;
     line-height: 1.4rem;
-    margin-bottom: 4px;
-    text-decoration: none; /* Asegura que el enlace no tenga subrayado */
-    /* Limitar a 2 líneas si el título es muy largo */
+    margin-bottom: 6px;
+    /* Truncar a 2 líneas */
     display: -webkit-box;
     line-clamp: 2;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
-.video-title:hover {
-    color: #0f0f0f; /* Sin cambio de color al hover para el título */
-}
 
 .channel-name, .video-meta {
     font-size: 14px;
-    color: #606060; /* Color gris para información secundaria */
+    color: #606060;
     line-height: 1.2rem;
-    margin-bottom: 2px;
 }
+
 .channel-name {
-    text-decoration: none; /* Para el enlace del canal */
+    margin-bottom: 2px;
+    display: flex;
+    align-items: center;
 }
-.channel-name:hover {
-    color: #0f0f0f; /* Oscurece al pasar el mouse por el nombre del canal */
-}
+.channel-name:hover { color: #0f0f0f; }
 
-/* Icono de verificado */
-.channel-name .material-icons {
-    font-size: 14px; /* Pequeño y discreto */
-    vertical-align: middle;
-    margin-left: 4px;
-    color: #606060; /* Color gris */
-}
-
-/* Icono de menú de 3 puntos (Opcional, para futuros ajustes) */
+/* Menú de 3 puntos (Hover) */
 .video-menu {
     position: absolute;
     top: 0;
     right: 0;
-    color: #606060;
-    opacity: 0; /* Invisible por defecto */
+    color: #0f0f0f;
+    opacity: 0; /* Invisible */
     transition: opacity 0.2s;
 }
 .video-card:hover .video-menu {
-    opacity: 1; /* Visible al pasar el mouse por la tarjeta */
+    opacity: 1; /* Visible al pasar el mouse */
 }
 
 
 /* --- Barra de Categorías (Chips) --- */
 .categories-bar {
-    border-bottom: 1px solid #e5e5e5; /* Separador sutil */
-    padding-bottom: 10px !important; /* Espacio debajo de los chips */
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    padding-bottom: 8px;
+    margin-bottom: 16px;
+    scrollbar-width: none; /* Firefox: Ocultar scroll */
 }
-.categories-bar .chip {
-    background-color: #e5e5e5;
+.categories-bar::-webkit-scrollbar { display: none; /* Chrome: Ocultar scroll */ }
+
+.chip {
+    background-color: rgba(0, 0, 0, 0.05);
     color: #0f0f0f;
     font-weight: 500;
     font-size: 14px;
     height: 32px;
     line-height: 32px;
     padding: 0 12px;
-    border-radius: 16px;
-    transition: background-color 0.2s;
-}
-.categories-bar .chip:hover {
-    background-color: #d0d0d0;
+    border-radius: 8px; /* Forma rectangular redondeada moderna */
+    margin: 0 !important;
     cursor: pointer;
+    transition: background-color 0.2s;
+    border: 1px solid transparent; /* Para evitar saltos */
 }
-/* Chip "Todos" activo */
-.categories-bar .chip.black {
+
+.chip:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.chip.active, .chip.black {
     background-color: #0f0f0f !important;
     color: #fff !important;
 }
 
-/* Estilo para el título de la sección "Recomendados" */
+/* Títulos de sección (Recomendados) */
 h5 {
-    font-weight: 700 !important; /* Negrita */
+    font-size: 20px !important;
+    font-weight: 700 !important;
+    margin: 24px 0 16px 0;
     color: #0f0f0f;
-    margin-bottom: 20px;
-    margin-top: 20px;
 }

@@ -1,108 +1,102 @@
 /* assets/css/sidebar.css */
 
-.sidenav-fixed {
-    top: 64px !important; /* Debajo del navbar */
-    height: calc(100% - 64px) !important;
+/* Base del Sidebar */
+.sidenav {
+    position: fixed;
+    top: var(--header-height) !important;
+    height: calc(100% - var(--header-height)) !important;
     padding-bottom: 0 !important;
-    z-index: 900;
-    width: 240px;
+    z-index: 999;
+    background-color: #fff;
+    overflow-y: auto;
+    width: var(--sidebar-width-open);
+    
+    /* IMPORTANTE: Esto asegura que el CSS gane a cualquier estilo inline */
+    transform: translateX(0); 
+    transition: transform var(--anim-speed), width var(--anim-speed);
+    
     box-shadow: none !important;
     border-right: none;
+    left: 0; /* Aseguramos posición izquierda */
 }
 
-/* Scrollbar Personalizado */
-.sidenav-fixed:hover { overflow-y: auto; }
-.sidenav-fixed::-webkit-scrollbar { width: 8px; }
-.sidenav-fixed::-webkit-scrollbar-track { background: transparent; }
-.sidenav-fixed::-webkit-scrollbar-thumb { background-color: #ccc; border-radius: 4px; }
-.sidenav-fixed::-webkit-scrollbar-thumb:hover { background-color: #999; }
+/* --- LOGICA GUIDE (Index PC) --- */
+@media only screen and (min-width: 1201px) {
+    .layout-guide .sidenav {
+        width: var(--sidebar-width-open);
+        transform: translateX(0);
+        border-right: 1px solid #e5e5e5;
+    }
 
-/* Elementos de lista */
-.sidenav li { line-height: normal; }
+    /* Modo Colapsado (Mini) */
+    .layout-guide.is-collapsed .sidenav {
+        width: var(--sidebar-width-mini);
+        overflow-x: hidden; /* Evita scroll horizontal al ocultar textos */
+    }
+
+    /* Ocultar elementos en modo mini */
+    .layout-guide.is-collapsed .sidenav li a span:not(.mini-text),
+    .layout-guide.is-collapsed .sidenav .sidebar-title, 
+    .layout-guide.is-collapsed .sidenav .sidebar-cta,
+    .layout-guide.is-collapsed .sidenav .divider {
+        display: none;
+    }
+    
+    /* Ajuste de iconos en modo mini */
+    .layout-guide.is-collapsed .sidenav li a {
+        padding: 0;
+        justify-content: center;
+        flex-direction: column;
+        height: 70px; /* Más alto para acomodar icono y texto */
+    }
+    
+    .layout-guide.is-collapsed .sidenav li a i {
+        margin: 0 0 4px 0;
+        font-size: 24px;
+    }
+    
+    .layout-guide.is-collapsed .sidenav li a .mini-text {
+        font-size: 10px;
+        line-height: 14px;
+        display: block;
+        text-align: center;
+        width: 100%;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}
+
+/* --- LOGICA MOVIL / WATCH (Overlay) --- */
+@media only screen and (max-width: 1200px) {
+    .layout-guide .sidenav {
+        transform: translateX(-100%);
+    }
+    .layout-guide.sidebar-open .sidenav {
+        transform: translateX(0);
+        box-shadow: 0 0 16px rgba(0,0,0,0.3) !important;
+    }
+}
+
+/* En página Watch siempre es overlay */
+.layout-watch .sidenav {
+    transform: translateX(-100%);
+}
+.layout-watch.sidebar-open .sidenav {
+    transform: translateX(0);
+    box-shadow: 0 0 16px rgba(0,0,0,0.3) !important;
+}
+
+/* Estilos de items */
 .sidenav li a {
-    height: 48px;
-    line-height: 48px;
-    padding: 0 24px;
-    font-size: 14px;
-    font-weight: 400;
     color: #0f0f0f;
     display: flex;
     align-items: center;
+    padding: 0 24px;
+    height: 48px;
+    cursor: pointer;
+    text-decoration: none;
 }
 .sidenav li a:hover { background-color: #f2f2f2; }
-.sidenav li a i.material-icons {
-    margin: 0 24px 0 0;
-    color: #0f0f0f;
-    font-size: 24px;
-}
-
-.sidebar-title {
-    padding: 16px 24px 8px;
-    font-size: 16px;
-    font-weight: 600;
-    color: #0f0f0f;
-    display: block;
-}
-
-.divider { margin: 12px 0 !important; background-color: #e5e5e5; }
-
-/* Caja de CTA (Login) */
-.sidebar-cta {
-    padding: 16px 32px;
-}
-.sidebar-cta p {
-    font-size: 14px;
-    line-height: 1.4;
-    margin: 0 0 12px 0;
-    color: #0f0f0f;
-}
-
-/* CORRECCIÓN DEL BOTÓN LOGIN */
-/* Usamos !important para ganarle a la regla general .sidenav li a */
-.sidenav li a.sidebar-login-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center; /* Centrado */
-    border: 1px solid #e5e5e5;
-    color: #065fd4 !important; /* Forzamos azul */
-    border-radius: 18px;
-    padding: 0 15px; /* Ajuste de padding lateral */
-    height: 36px; /* Altura fija estilo pastilla */
-    font-weight: 600;
-    font-size: 14px;
-    text-transform: none;
-    width: auto; /* Evita que ocupe todo el ancho */
-}
-
-/* Icono dentro del botón */
-.sidenav li a.sidebar-login-btn i { 
-    margin-right: 6px; 
-    font-size: 20px;
-    color: #065fd4 !important; /* Forzamos icono azul */
-}
-
-.sidenav li a.sidebar-login-btn:hover {
-    background-color: #def1ff; /* Fondo azul claro al pasar mouse */
-    border-color: #def1ff;
-}
-
-/* Footer del sidebar */
-.sidebar-footer {
-    padding: 16px 24px;
-    margin-bottom: 20px;
-}
-.sidebar-footer a {
-    display: inline-block !important;
-    height: auto !important;
-    line-height: 1.2 !important;
-    padding: 0 !important;
-    margin-right: 8px;
-    font-size: 12px !important;
-    font-weight: 600 !important;
-    color: #606060 !important;
-}
-.sidebar-footer p {
-    font-size: 12px;
-    color: #909090;
-    margin-top: 16px;
-}
+.sidenav li a i { margin-right: 24px; color: #0f0f0f; font-size: 24px; }
+.sidebar-title { padding: 16px 24px 8px; font-weight: 600; font-size: 16px; display: block; }

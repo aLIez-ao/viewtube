@@ -3,6 +3,14 @@
 require_once dirname(__DIR__) . '/config/db.php';
 
 if (!isset($APP_NAME)) $APP_NAME = "ViewTube";
+
+// Determinamos el layout si no está definido (por defecto 'guide' para index/home)
+if (!isset($page_layout)) {
+    $page_layout = 'guide'; 
+}
+
+// Clase para el body según el layout
+$bodyClass = ($page_layout === 'watch') ? 'layout-watch' : 'layout-guide';
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -19,9 +27,13 @@ if (!isset($APP_NAME)) $APP_NAME = "ViewTube";
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/header.css">
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/sidebar.css">
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/home.css">
+    <?php if($page_layout === 'watch'): ?>
+        <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/watch.css">
+    <?php endif; ?>
 </head>
 
-<body>
+<!-- Agregamos la clase de layout y una clase por defecto si el sidebar está colapsado -->
+<body class="<?php echo $bodyClass; ?>">
 
     <?php include 'sidebar.php'; ?>
 
@@ -30,7 +42,8 @@ if (!isset($APP_NAME)) $APP_NAME = "ViewTube";
 
             <!-- IZQUIERDA -->
             <div class="nav-left">
-                <a href="#" data-target="slide-out" class="sidenav-trigger show-on-large menu-btn">
+                <!-- Quitamos data-target para manejarlo manualmente con JS profesional -->
+                <a href="#" id="toggleSidebarBtn" class="menu-btn">
                     <i class="material-icons">menu</i>
                 </a>
                 <a href="<?php echo BASE_URL; ?>index.php" class="brand-logo-custom">
@@ -62,12 +75,8 @@ if (!isset($APP_NAME)) $APP_NAME = "ViewTube";
                 </a>
 
                 <?php if (isset($_SESSION['user_id'])): ?>
-                    
-                    <!-- AQUÍ ESTÁ EL CAMBIO: Incluimos el componente limpio -->
                     <?php include 'components/user_menu.php'; ?>
-
                 <?php else: ?>
-                    
                     <a href="#" class="icon-btn tooltipped" data-position="bottom" data-tooltip="Configuración">
                         <i class="material-icons">more_vert</i>
                     </a>
@@ -75,12 +84,14 @@ if (!isset($APP_NAME)) $APP_NAME = "ViewTube";
                         <i class="material-icons">account_circle</i>
                         Acceder
                     </a>
-
                 <?php endif; ?>
             </div>
 
         </div>
     </nav>
+
+    <!-- Overlay para el modo Watch (fondo oscuro) -->
+    <div id="sidebarOverlay" class="sidebar-overlay"></div>
 
     <main>
         <div class="container-fluid" style="padding: 20px;">

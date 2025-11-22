@@ -6,9 +6,10 @@
     width: 100%;
     padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
     background: #000;
-    border-radius: 12px; /* Bordes redondeados modernos */
+    border-radius: 12px;
     overflow: hidden;
-    margin-bottom: 12px;
+    margin-bottom: 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1); /* Sombra suave para resaltar */
 }
 
 .video-container-wrapper iframe {
@@ -22,10 +23,10 @@
 
 /* --- DATOS DEL VIDEO --- */
 h1.video-watch-title {
-    font-size: 20px;
+    font-size: 22px; /* Título un poco más grande */
     font-weight: 700;
     color: #0f0f0f;
-    margin: 0 0 8px 0;
+    margin: 0 0 12px 0;
     line-height: 28px;
 }
 
@@ -68,10 +69,11 @@ h1.video-watch-title {
     text-transform: none;
     margin-left: 24px;
     box-shadow: none;
+    border: none;
 }
 .btn-subscribe:hover { background-color: #333; box-shadow: none; }
 
-/* Botones de Like/Share (Forma de pastilla gris) */
+/* Botones de Like/Share */
 .actions-buttons {
     display: flex;
     align-items: center;
@@ -90,9 +92,12 @@ h1.video-watch-title {
     display: inline-flex;
     align-items: center;
     box-shadow: none;
+    border: none;
 }
 .btn-action:hover { background-color: #e5e5e5; box-shadow: none; color: #0f0f0f; }
 .btn-action i { font-size: 20px; margin-right: 6px; }
+.btn-action.btn-circle { padding: 0; width: 36px; justify-content: center; }
+.btn-action.btn-circle i { margin: 0; }
 
 /* Caja de Descripción */
 .description-box {
@@ -103,86 +108,84 @@ h1.video-watch-title {
     color: #0f0f0f;
     margin-top: 12px;
 }
-.description-box strong { display: block; margin-bottom: 4px; }
-.description-text { white-space: pre-wrap; /* Respeta saltos de línea */ }
+.description-box strong { display: block; margin-bottom: 8px; }
+.description-text { white-space: pre-wrap; line-height: 1.4; }
 
 
-/* --- SIDEBAR DE VIDEOS (Columna Derecha) --- */
+/* --- SIDEBAR DE VIDEOS (Columna Derecha - MEJORADO) --- */
 .related-video-card {
     display: flex;
-    margin-bottom: 8px;
+    margin-bottom: 12px; /* Más separación vertical */
     cursor: pointer;
     text-decoration: none;
+    align-items: flex-start; /* Alinear al top */
+    width: 100%; /* Ocupar todo el ancho disponible de la columna */
 }
+
 .related-thumbnail {
-    width: 168px;
-    height: 94px;
+    /* Antes 168px, ahora relativo y más grande */
+    width: 40%; 
+    min-width: 180px; /* Tamaño mínimo decente */
+    max-width: 220px; /* Que no se haga gigante */
+    aspect-ratio: 16/9; /* Mantiene la proporción automáticamente */
+    
     flex-shrink: 0;
     border-radius: 8px;
     overflow: hidden;
-    margin-right: 8px;
+    margin-right: 10px;
     position: relative;
+    background-color: #ddd;
 }
 .related-thumbnail img { width: 100%; height: 100%; object-fit: cover; }
 
 .related-info {
     display: flex;
     flex-direction: column;
-    min-width: 0; /* Truco flexbox para textos largos */
+    justify-content: flex-start;
+    min-width: 0; 
+    flex-grow: 1;
+    padding-top: 4px; /* Pequeño ajuste óptico */
 }
+
 .related-title {
-    font-size: 14px;
+    font-size: 15px; /* Letra un poco más grande */
     font-weight: 600;
     color: #0f0f0f;
-    margin-bottom: 4px;
+    margin-bottom: 6px;
     display: -webkit-box;
     line-clamp: 2;
     -webkit-line-clamp: 2;
-
     -webkit-box-orient: vertical;
     overflow: hidden;
-    line-height: 1.2rem;
+    line-height: 1.3rem;
 }
-.related-channel { font-size: 12px; color: #606060; margin-bottom: 2px; }
+
+.related-channel { font-size: 13px; color: #606060; margin-bottom: 2px; }
 .related-meta { font-size: 12px; color: #606060; }
-/* ... (Mantén el código CSS anterior que ya tenías) ... */
 
 /* --- ESTILOS DE ESTADO (PERSISTENTES) --- */
-
-/* Botón Suscrito (Estado Activo) */
-/* Usamos !important para que Materialize no lo sobrescriba al perder el foco */
 button.btn-subscribe.subscribed {
     background-color: #f0f0f0 !important;
     color: #606060 !important;
     box-shadow: none !important;
-    border: 1px solid #d3d3d3 !important; /* Borde sutil para que se note en fondos blancos */
+    border: 1px solid #d3d3d3 !important;
 }
-
 button.btn-subscribe.subscribed:hover {
     background-color: #e0e0e0 !important;
 }
-
-/* Botones de Acción (Like/Dislike) Activos */
 button.btn-action.active {
     background-color: #0f0f0f !important;
     color: #ffffff !important;
     border-color: #0f0f0f !important;
 }
-
-/* Aseguramos que el icono dentro también cambie a blanco */
 button.btn-action.active i {
     color: #ffffff !important;
 }
 
-/* Estilos del Modal (Para asegurar que se vea bien) */
+/* Modal */
 .modal {
     border-radius: 12px !important;
     max-width: 400px !important;
 }
-.modal .modal-content {
-    padding: 24px !important;
-}
-.modal .modal-footer {
-    padding: 8px 24px 24px !important;
-    height: auto !important;
-}
+.modal .modal-content { padding: 24px !important; }
+.modal .modal-footer { padding: 8px 24px 24px !important; height: auto !important; }

@@ -1,6 +1,6 @@
 /* assets/css/watch.css */
 
-/* --- REPRODUCTOR RESPONSIVO (Ratio 16:9) --- */
+/* --- REPRODUCTOR Y LAYOUT --- */
 .video-container-wrapper {
     position: relative;
     width: 100%;
@@ -9,183 +9,196 @@
     border-radius: 12px;
     overflow: hidden;
     margin-bottom: 16px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1); /* Sombra suave para resaltar */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
-
 .video-container-wrapper iframe {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border: 0;
+    top: 0; left: 0; width: 100%; height: 100%; border: 0;
 }
 
-/* --- DATOS DEL VIDEO --- */
 h1.video-watch-title {
-    font-size: 22px; /* Título un poco más grande */
-    font-weight: 700;
-    color: #0f0f0f;
-    margin: 0 0 12px 0;
-    line-height: 28px;
+    font-size: 22px; font-weight: 700; color: #0f0f0f; margin: 0 0 12px 0; line-height: 28px;
 }
 
-/* Fila de Acciones (Canal + Botones) */
 .video-actions-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-bottom: 16px;
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-bottom: 16px;
 }
 
-/* Canal y Suscribirse */
-.channel-info-block {
-    display: flex;
-    align-items: center;
-}
-.channel-avatar-watch {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    margin-right: 12px;
-    overflow: hidden;
-}
+/* Canal y Botones */
+.channel-info-block { display: flex; align-items: center; }
+.channel-avatar-watch { width: 40px; height: 40px; border-radius: 50%; margin-right: 12px; overflow: hidden; }
 .channel-avatar-watch img { width: 100%; height: 100%; object-fit: cover; }
-
 .channel-text h6 { margin: 0; font-weight: 600; font-size: 16px; color: #0f0f0f; }
 .channel-text span { font-size: 12px; color: #606060; }
 
 .btn-subscribe {
-    background-color: #0f0f0f;
-    color: white;
-    border-radius: 18px;
-    padding: 0 16px;
-    height: 36px;
-    line-height: 36px;
-    font-weight: 500;
-    font-size: 14px;
-    text-transform: none;
-    margin-left: 24px;
-    box-shadow: none;
-    border: none;
+    background-color: #0f0f0f; color: white; border-radius: 18px; padding: 0 16px; height: 36px; line-height: 36px; font-weight: 500; font-size: 14px; text-transform: none; margin-left: 24px; box-shadow: none; border: none;
 }
-.btn-subscribe:hover { background-color: #333; box-shadow: none; }
+.btn-subscribe:hover { background-color: #333; }
+.btn-subscribe.subscribed { background-color: #f2f2f2 !important; color: #0f0f0f !important; border: 1px solid #e5e5e5 !important; }
 
-/* Botones de Like/Share */
-.actions-buttons {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
+.actions-buttons { display: flex; align-items: center; gap: 8px; }
 .btn-action {
-    background-color: #f2f2f2;
-    color: #0f0f0f;
-    border-radius: 18px;
-    height: 36px;
-    line-height: 36px;
-    padding: 0 16px;
-    font-weight: 500;
-    font-size: 14px;
-    text-transform: none;
-    display: inline-flex;
-    align-items: center;
-    box-shadow: none;
-    border: none;
+    background-color: #f2f2f2; color: #0f0f0f; border-radius: 18px; height: 36px; line-height: 36px; padding: 0 16px; font-weight: 500; font-size: 14px; text-transform: none; display: inline-flex; align-items: center; box-shadow: none; border: none;
 }
-.btn-action:hover { background-color: #e5e5e5; box-shadow: none; color: #0f0f0f; }
+.btn-action:hover { background-color: #e5e5e5; }
 .btn-action i { font-size: 20px; margin-right: 6px; }
+.btn-action.active { background-color: #0f0f0f !important; color: #fff !important; }
+.btn-action.active i { color: #fff !important; }
 .btn-action.btn-circle { padding: 0; width: 36px; justify-content: center; }
 .btn-action.btn-circle i { margin: 0; }
 
-/* Caja de Descripción */
-.description-box {
-    background-color: #f2f2f2;
-    border-radius: 12px;
-    padding: 12px;
-    font-size: 14px;
-    color: #0f0f0f;
-    margin-top: 12px;
-}
-.description-box strong { display: block; margin-bottom: 8px; }
-.description-text { white-space: pre-wrap; line-height: 1.4; }
+.description-box { background-color: #f2f2f2; border-radius: 12px; padding: 12px; font-size: 14px; color: #0f0f0f; margin-top: 12px; }
+.description-text { white-space: pre-wrap; }
 
-
-/* --- SIDEBAR DE VIDEOS (Columna Derecha - MEJORADO) --- */
-.related-video-card {
-    display: flex;
-    margin-bottom: 12px; /* Más separación vertical */
-    cursor: pointer;
-    text-decoration: none;
-    align-items: flex-start; /* Alinear al top */
-    width: 100%; /* Ocupar todo el ancho disponible de la columna */
-}
-
-.related-thumbnail {
-    /* Antes 168px, ahora relativo y más grande */
-    width: 40%; 
-    min-width: 180px; /* Tamaño mínimo decente */
-    max-width: 220px; /* Que no se haga gigante */
-    aspect-ratio: 16/9; /* Mantiene la proporción automáticamente */
-    
-    flex-shrink: 0;
-    border-radius: 8px;
-    overflow: hidden;
-    margin-right: 10px;
-    position: relative;
-    background-color: #ddd;
-}
+/* SIDEBAR */
+.related-video-card { display: flex; margin-bottom: 12px; cursor: pointer; text-decoration: none; width: 100%; }
+.related-thumbnail { width: 40%; min-width: 160px; max-width: 200px; aspect-ratio: 16/9; border-radius: 8px; overflow: hidden; margin-right: 8px; position: relative; }
 .related-thumbnail img { width: 100%; height: 100%; object-fit: cover; }
+.related-info { display: flex; flex-direction: column; min-width: 0; }
+.related-title { font-size: 14px; font-weight: 600; color: #0f0f0f; margin-bottom: 4px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.2rem; }
+.related-channel, .related-meta { font-size: 12px; color: #606060; margin-bottom: 2px; }
+.duration-badge { position: absolute; bottom: 4px; right: 4px; background: rgba(0,0,0,0.8); color: #fff; font-size: 11px; padding: 2px 4px; border-radius: 4px; }
 
-.related-info {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    min-width: 0; 
-    flex-grow: 1;
-    padding-top: 4px; /* Pequeño ajuste óptico */
+
+/* --- ESTILOS DEL MODAL DE COMPARTIR (NUEVO) --- */
+.modal {
+    border-radius: 16px !important;
+    max-width: 500px !important;
+    outline: none !important;
+    overflow: visible !important; /* Permite que los tooltips salgan si es necesario */
 }
 
-.related-title {
-    font-size: 15px; /* Letra un poco más grande */
+.modal .modal-content {
+    padding: 24px !important;
+}
+
+.share-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+.share-header h5 {
+    margin: 0;
+    font-size: 18px;
     font-weight: 600;
     color: #0f0f0f;
-    margin-bottom: 6px;
-    display: -webkit-box;
-    line-clamp: 2;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    line-height: 1.3rem;
+}
+.share-header i.modal-close {
+    cursor: pointer;
+    color: #606060;
+    font-size: 24px;
+    padding: 4px;
+    border-radius: 50%;
+    transition: background-color 0.2s;
+}
+.share-header i.modal-close:hover { background-color: #f2f2f2; }
+
+/* Grid de Iconos Sociales */
+.social-row {
+    display: flex;
+    gap: 16px;
+    padding-bottom: 24px;
+    overflow-x: auto;
+    /* Ocultar barra scroll fea */
+    scrollbar-width: none; 
+}
+.social-row::-webkit-scrollbar { display: none; }
+
+.social-icon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    min-width: 64px;
+    cursor: pointer;
+}
+.social-icon:hover { opacity: 0.9; }
+
+.icon-circle {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 8px;
+    transition: transform 0.2s;
+}
+.social-icon:hover .icon-circle { transform: scale(1.05); }
+
+.social-icon span {
+    font-size: 12px;
+    color: #0f0f0f;
+    text-align: center;
+    line-height: 1.2;
 }
 
-.related-channel { font-size: 13px; color: #606060; margin-bottom: 2px; }
-.related-meta { font-size: 12px; color: #606060; }
+/* Colores Específicos */
+.icon-circle.whatsapp { background-color: #25D366; }
+.icon-circle.facebook { background-color: #1877F2; }
+.icon-circle.twitter { background-color: #000000; }
+.icon-circle.email { background-color: #757575; }
 
-/* --- ESTILOS DE ESTADO (PERSISTENTES) --- */
-button.btn-subscribe.subscribed {
-    background-color: #f0f0f0 !important;
-    color: #606060 !important;
+/* Input de Copiar */
+.copy-link-wrapper {
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+    padding: 4px 4px 4px 12px;
+    display: flex;
+    align-items: center;
+    background-color: #f9f9f9;
+    margin-bottom: 16px;
+}
+
+.input-container {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.input-container input {
+    border: none !important;
     box-shadow: none !important;
-    border: 1px solid #d3d3d3 !important;
-}
-button.btn-subscribe.subscribed:hover {
-    background-color: #e0e0e0 !important;
-}
-button.btn-action.active {
-    background-color: #0f0f0f !important;
-    color: #ffffff !important;
-    border-color: #0f0f0f !important;
-}
-button.btn-action.active i {
-    color: #ffffff !important;
+    background: transparent;
+    font-size: 14px;
+    color: #0f0f0f;
+    flex-grow: 1;
+    margin: 0 !important;
+    padding: 0 !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-/* Modal */
-.modal {
-    border-radius: 12px !important;
-    max-width: 400px !important;
+#copyLinkBtn {
+    background-color: #065fd4;
+    color: white;
+    border: none;
+    border-radius: 18px;
+    padding: 0 20px;
+    height: 36px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    margin-left: 8px;
+    white-space: nowrap;
 }
-.modal .modal-content { padding: 24px !important; }
-.modal .modal-footer { padding: 8px 24px 24px !important; height: auto !important; }
+#copyLinkBtn:hover { background-color: #0556bf; }
+
+/* Checkbox Empezar en */
+.start-at-wrapper {
+    display: flex;
+    align-items: center;
+}
+.start-at-wrapper label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+.start-at-wrapper span {
+    font-size: 14px;
+    color: #0f0f0f;
+    margin-left: 8px;
+}

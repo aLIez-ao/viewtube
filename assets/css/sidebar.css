@@ -1,6 +1,6 @@
 /* assets/css/sidebar.css */
 
-/* Base del Sidebar */
+/* --- BASE DEL SIDEBAR --- */
 .sidenav {
     position: fixed;
     top: var(--header-height) !important;
@@ -11,92 +11,177 @@
     overflow-y: auto;
     width: var(--sidebar-width-open);
     
-    /* IMPORTANTE: Esto asegura que el CSS gane a cualquier estilo inline */
-    transform: translateX(0); 
+    transform: translateX(0) !important; 
     transition: transform var(--anim-speed), width var(--anim-speed);
     
     box-shadow: none !important;
     border-right: none;
-    left: 0; /* Aseguramos posición izquierda */
+    left: 0;
 }
 
-/* --- LOGICA GUIDE (Index PC) --- */
-@media only screen and (min-width: 1201px) {
+/* --- ESTILOS DE LISTA (ITEMS) --- */
+.sidenav li {
+    line-height: normal; /* Resetear line-height de Materialize */
+}
+
+.sidenav li a {
+    color: #0f0f0f;
+    display: flex;
+    align-items: center;
+    padding: 0 24px; /* Padding lateral estándar */
+    height: 48px;    /* Altura fija para consistencia */
+    cursor: pointer;
+    text-decoration: none;
+    overflow: hidden; /* Evitar desbordes */
+}
+
+.sidenav li a:hover { 
+    background-color: #f2f2f2; 
+}
+
+/* Iconos */
+.sidenav li a i { 
+    margin-right: 24px; 
+    color: #0f0f0f; 
+    font-size: 24px; 
+    flex-shrink: 0; /* IMPORTANTE: Evita que el icono se aplaste */
+    width: 24px;
+    text-align: center;
+}
+
+/* Textos de los enlaces */
+.sidenav li a span, 
+.sidenav li a .mini-text {
+    font-size: 14px;
+    font-weight: 400;
+    white-space: nowrap; /* IMPORTANTE: Fuerza una sola línea */
+    overflow: hidden;
+    text-overflow: ellipsis; /* Pone "..." si el texto es muy largo */
+    flex-grow: 1;
+    line-height: 48px; /* Centrado vertical perfecto */
+}
+
+/* Títulos de sección (Tú, Explorar) */
+.sidebar-title { 
+    padding: 16px 24px 8px; 
+    font-weight: 600; 
+    font-size: 16px; 
+    display: flex;
+    align-items: center;
+    color: #0f0f0f;
+}
+.sidebar-title i { margin-right: 24px; } /* Si el título tiene icono */
+
+.divider { margin: 12px 0 !important; background-color: #e5e5e5; }
+
+
+/* --- CAJA DE LLAMADA A LA ACCIÓN (NO LOGUEADO) --- */
+.sidebar-cta {
+    padding: 16px 32px;
+}
+
+.sidebar-cta p {
+    font-size: 13px; /* Texto más pequeño y elegante */
+    line-height: 1.5;
+    color: #0f0f0f;
+    margin: 0 0 12px 0;
+    white-space: normal; /* Aquí sí permitimos varias líneas */
+}
+
+/* Botón "Acceder" dentro del Sidebar */
+.sidebar-login-btn {
+    display: inline-flex !important; /* Forzar flex para alinear icono y texto */
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #e5e5e5;
+    color: #065fd4 !important; /* Azul YouTube */
+    border-radius: 18px;
+    padding: 0 15px;
+    height: 36px;
+    font-weight: 600;
+    font-size: 14px;
+    text-transform: none;
+    width: auto;
+    margin-top: 5px;
+}
+
+.sidebar-login-btn i {
+    margin-right: 6px !important;
+    font-size: 20px !important;
+    color: #065fd4 !important;
+    width: auto !important;
+}
+
+.sidebar-login-btn:hover {
+    background-color: #def1ff; /* Fondo azul claro al pasar mouse */
+    border-color: #def1ff;
+}
+
+
+/* --- LOGICA GUIDE (Index PC - Pantallas > 992px) --- */
+@media only screen and (min-width: 993px) {
     .layout-guide .sidenav {
         width: var(--sidebar-width-open);
-        transform: translateX(0);
+        transform: translateX(0) !important;
         border-right: 1px solid #e5e5e5;
     }
 
     /* Modo Colapsado (Mini) */
     .layout-guide.is-collapsed .sidenav {
         width: var(--sidebar-width-mini);
-        overflow-x: hidden; /* Evita scroll horizontal al ocultar textos */
+        overflow-x: hidden;
     }
 
     /* Ocultar elementos en modo mini */
-    .layout-guide.is-collapsed .sidenav li a span:not(.mini-text),
+    .layout-guide.is-collapsed .sidenav li a span:not(.mini-text), /* Oculta spans normales si hubiera */
     .layout-guide.is-collapsed .sidenav .sidebar-title, 
     .layout-guide.is-collapsed .sidenav .sidebar-cta,
     .layout-guide.is-collapsed .sidenav .divider {
         display: none;
     }
     
-    /* Ajuste de iconos en modo mini */
+    /* Ajuste visual para items en modo Mini */
     .layout-guide.is-collapsed .sidenav li a {
         padding: 0;
         justify-content: center;
         flex-direction: column;
-        height: 70px; /* Más alto para acomodar icono y texto */
+        height: 72px; /* Más alto para apilar icono y texto */
     }
     
     .layout-guide.is-collapsed .sidenav li a i {
-        margin: 0 0 4px 0;
+        margin: 0 0 6px 0;
         font-size: 24px;
     }
     
+    /* Texto pequeño debajo del icono */
     .layout-guide.is-collapsed .sidenav li a .mini-text {
         font-size: 10px;
-        line-height: 14px;
+        line-height: 1.2;
         display: block;
         text-align: center;
         width: 100%;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        padding: 0 4px;
     }
 }
 
-/* --- LOGICA MOVIL / WATCH (Overlay) --- */
-@media only screen and (max-width: 1200px) {
+/* --- LOGICA MOVIL / WATCH --- */
+@media only screen and (max-width: 992px) {
     .layout-guide .sidenav {
-        transform: translateX(-100%);
+        transform: translateX(-100%) !important;
     }
     .layout-guide.sidebar-open .sidenav {
-        transform: translateX(0);
+        transform: translateX(0) !important;
         box-shadow: 0 0 16px rgba(0,0,0,0.3) !important;
     }
 }
 
-/* En página Watch siempre es overlay */
 .layout-watch .sidenav {
-    transform: translateX(-100%);
+    transform: translateX(-100%) !important;
 }
 .layout-watch.sidebar-open .sidenav {
-    transform: translateX(0);
+    transform: translateX(0) !important;
     box-shadow: 0 0 16px rgba(0,0,0,0.3) !important;
 }
-
-/* Estilos de items */
-.sidenav li a {
-    color: #0f0f0f;
-    display: flex;
-    align-items: center;
-    padding: 0 24px;
-    height: 48px;
-    cursor: pointer;
-    text-decoration: none;
-}
-.sidenav li a:hover { background-color: #f2f2f2; }
-.sidenav li a i { margin-right: 24px; color: #0f0f0f; font-size: 24px; }
-.sidebar-title { padding: 16px 24px 8px; font-weight: 600; font-size: 16px; display: block; }

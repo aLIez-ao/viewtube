@@ -22,7 +22,8 @@ document.addEventListener("DOMContentLoaded", function () {
   const commentInput = document.getElementById("commentInput");
   const submitCommentBtn = document.getElementById("submitCommentBtn");
   const commentsList = document.querySelector(".comments-list");
-  const commentFormActions = document.querySelector(".comment-form-actions"); // Contenedor de botones
+  // Botones de acción (Cancelar/Comentar)
+  const commentFormActions = document.querySelector(".comment-form-actions");
   const cancelCommentBtn = document.querySelector(
     ".comment-form-actions button:first-child"
   );
@@ -63,19 +64,26 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // =================================================
-  // 1. LÓGICA DE COMENTARIOS (ACTUALIZADA)
+  // 1. LÓGICA DE COMENTARIOS (COMPLETA)
   // =================================================
 
   if (commentInput && submitCommentBtn && commentFormActions) {
     // 0. Estado Inicial: Ocultar botones de acción
     commentFormActions.style.display = "none";
 
-    // 1. Mostrar botones al hacer foco (click en input)
+    // 1. Auto-resize del Textarea
+    const autoResize = () => {
+      commentInput.style.height = "auto";
+      commentInput.style.height = commentInput.scrollHeight + "px";
+    };
+    commentInput.addEventListener("input", autoResize);
+
+    // 2. Mostrar botones al hacer foco (Click en el input)
     commentInput.addEventListener("focus", function () {
       commentFormActions.style.display = "flex";
     });
 
-    // 2. Habilitar/Deshabilitar botón según contenido
+    // 3. Habilitar botón enviar si hay texto
     commentInput.addEventListener("input", function () {
       const text = this.value.trim();
       if (text.length > 0) {
@@ -85,21 +93,23 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
 
-    // 3. Botón Cancelar
+    // 4. Botón Cancelar (Limpiar y Ocultar)
     if (cancelCommentBtn) {
       cancelCommentBtn.addEventListener("click", function () {
         // A. Limpiar texto
         commentInput.value = "";
-        // B. Deshabilitar botón enviar
+        // B. Resetear altura del textarea
+        commentInput.style.height = "auto";
+        // C. Deshabilitar botón enviar
         submitCommentBtn.setAttribute("disabled", "true");
-        // C. Ocultar botones
+        // D. Ocultar botones de acción
         commentFormActions.style.display = "none";
-        // D. Quitar foco del input (blur)
+        // E. Quitar foco del input (blur)
         commentInput.blur();
       });
     }
 
-    // 4. Enviar Comentario
+    // 5. Enviar Comentario
     submitCommentBtn.addEventListener("click", function () {
       const content = commentInput.value.trim();
       const urlParams = new URLSearchParams(window.location.search);
@@ -107,23 +117,22 @@ document.addEventListener("DOMContentLoaded", function () {
 
       if (!content || !videoId) return;
 
+      // Deshabilitar para evitar doble envío
       submitCommentBtn.disabled = true;
 
       fetch("actions/post_comment.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          video_id: videoId,
-          content: content,
-        }),
+        body: JSON.stringify({ video_id: videoId, content: content }),
       })
         .then((response) => response.json())
         .then((data) => {
           submitCommentBtn.disabled = false;
 
           if (data.success) {
-            // Resetear formulario completamente al enviar
+            // Resetear formulario completamente al enviar exitosamente
             commentInput.value = "";
+            commentInput.style.height = "auto";
             submitCommentBtn.setAttribute("disabled", "true");
             commentFormActions.style.display = "none"; // Ocultar botones
             commentInput.blur(); // Quitar foco
@@ -131,10 +140,10 @@ document.addEventListener("DOMContentLoaded", function () {
             prependComment(data.comment);
             showMessage("Comentario publicado");
           } else if (data.error === "auth_required") {
-            showMessage("Debes iniciar sesión para comentar");
+            showMessage("Debes iniciar sesión");
             setTimeout(() => (window.location.href = "login.php"), 1500);
           } else {
-            showMessage("Error al publicar: " + data.error);
+            showMessage("Error: " + data.error);
           }
         })
         .catch((err) => {
@@ -145,10 +154,11 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  // Función para inyectar comentario
+  // Función para insertar comentario nuevo al principio
   function prependComment(commentData) {
     if (!commentsList) return;
 
+    // CORRECCIÓN DE ESPACIOS: HTML comprimido para evitar sangrías no deseadas
     const commentHTML = `
             <div class="comment-item" style="animation: fadeIn 0.5s;">
                 <a href="#!" class="comment-avatar-link">
@@ -159,9 +169,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         <span class="author-name">${commentData.username}</span>
                         <span class="comment-time">${commentData.date}</span>
                     </div>
-                    <div class="comment-content">
-                        ${commentData.content}
-                    </div>
+                    <div class="comment-content">${commentData.content}</div>
                     <div class="comment-actions-toolbar">
                         <button class="btn-icon-comment like-comment">
                             <i class="material-icons">thumb_up_alt</i>
@@ -177,12 +185,11 @@ document.addEventListener("DOMContentLoaded", function () {
         `;
 
     const emptyMsg = commentsList.querySelector("p.center-align");
-    if (emptyMsg && emptyMsg.textContent.includes("primero")) {
-      emptyMsg.remove();
-    }
+    if (emptyMsg) emptyMsg.remove();
 
     commentsList.insertAdjacentHTML("afterbegin", commentHTML);
 
+    // Actualizar contador visualmente (Opcional)
     const countTitle = document.querySelector(".comments-count-title");
     if (countTitle) {
       const currentText = countTitle.textContent;
@@ -246,172 +253,115 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // =================================================
-  // 3. LÓGICA DE SUSCRIPCIÓN
+  // 3. LÓGICA DE SUSCRIPCIÓN Y LIKES
   // =================================================
 
   if (subscribeBtn) {
-    subscribeBtn.addEventListener("click", function (e) {
+    subscribeBtn.addEventListener("click", (e) => {
       e.preventDefault();
       const isSubscribed = subscribeBtn.classList.contains("subscribed");
-
       if (isSubscribed) {
-        if (modalUnsubInstance) {
-          modalUnsubInstance.open();
-        } else if (confirm("¿Quieres anular tu suscripción?")) {
-          performSubscriptionAction();
-        }
-      } else {
-        performSubscriptionAction();
-      }
+        if (modalUnsubInstance) modalUnsubInstance.open();
+        else if (confirm("¿Anular?")) performSubscriptionAction();
+      } else performSubscriptionAction();
     });
   }
-
   if (confirmUnsubBtn) {
-    confirmUnsubBtn.addEventListener("click", function (e) {
+    confirmUnsubBtn.addEventListener("click", (e) => {
       e.preventDefault();
       performSubscriptionAction();
       if (modalUnsubInstance) modalUnsubInstance.close();
     });
   }
-
   function performSubscriptionAction() {
     const channelId = subscribeBtn.getAttribute("data-channel-id");
     subscribeBtn.disabled = true;
-
     fetch("actions/subscribe.php", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ channel_id: channelId }),
     })
-      .then((response) => response.text())
+      .then((r) => r.text())
       .then((text) => {
         subscribeBtn.disabled = false;
         try {
           const data = JSON.parse(text);
-          if (data.success) {
-            updateSubscribeButton(data.status, data.count);
-          } else if (data.error === "auth_required") {
-            showAuthError();
-          } else {
-            console.error("Error suscripción:", data.error);
-          }
-        } catch (e) {
-          console.error("Error JSON Suscripción:", text);
-        }
-      })
-      .catch((err) => {
-        subscribeBtn.disabled = false;
-        console.error(err);
+          if (data.success) updateSubscribeButton(data.status, data.count);
+        } catch (e) {}
       });
   }
-
-  function updateSubscribeButton(status, count) {
-    const countSpan = document.getElementById("subscribersCount");
-
-    if (status === "subscribed") {
+  function updateSubscribeButton(s, c) {
+    const sp = document.getElementById("subscribersCount");
+    if (s === "subscribed") {
       subscribeBtn.classList.add("subscribed");
       subscribeBtn.textContent = "Suscrito";
-      showMessage("Suscripción añadida");
     } else {
       subscribeBtn.classList.remove("subscribed");
       subscribeBtn.textContent = "Suscribirse";
-      showMessage("Suscripción eliminada");
     }
-
-    if (countSpan && count) {
-      countSpan.textContent = count + " suscriptores";
-    }
+    if (sp) sp.textContent = c + " suscriptores";
   }
 
-  // =================================================
-  // 4. LÓGICA DE LIKES
-  // =================================================
-
+  // LIKES
   function updateIcons() {
-    if (!likeBtn || !dislikeBtn) return;
-
-    const likeIcon = likeBtn.querySelector("i");
-    const dislikeIcon = dislikeBtn.querySelector("i");
-
-    likeIcon.textContent = likeBtn.classList.contains("active")
+    if (!likeBtn) return;
+    const i1 = likeBtn.querySelector("i"),
+      i2 = dislikeBtn.querySelector("i");
+    i1.textContent = likeBtn.classList.contains("active")
       ? "thumb_up"
       : "thumb_up_alt";
-    dislikeIcon.textContent = dislikeBtn.classList.contains("active")
+    i2.textContent = dislikeBtn.classList.contains("active")
       ? "thumb_down"
       : "thumb_down_alt";
   }
-
   function handleRate(type) {
     if (type === "like") {
-      const wasActive = likeBtn.classList.contains("active");
-      if (wasActive) likeBtn.classList.remove("active");
+      const active = likeBtn.classList.contains("active");
+      if (active) likeBtn.classList.remove("active");
       else {
         likeBtn.classList.add("active");
         dislikeBtn.classList.remove("active");
       }
     } else {
-      const wasActive = dislikeBtn.classList.contains("active");
-      if (wasActive) dislikeBtn.classList.remove("active");
+      const active = dislikeBtn.classList.contains("active");
+      if (active) dislikeBtn.classList.remove("active");
       else {
         dislikeBtn.classList.add("active");
         likeBtn.classList.remove("active");
       }
     }
-
     updateIcons();
-
-    const videoId = likeBtn.getAttribute("data-video-id");
-
+    const vid = likeBtn.getAttribute("data-video-id");
     fetch("actions/rate_video.php", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ video_id: videoId, type: type }),
+      body: JSON.stringify({ video_id: vid, type: type }),
     })
-      .then((response) => response.text())
-      .then((text) => {
+      .then((r) => r.text())
+      .then((t) => {
         try {
-          const data = JSON.parse(text);
-          if (data.success) {
-            updateRateUI(data.likes, data.dislikes, data.action, type);
-          } else if (data.error === "auth_required") {
-            showAuthError();
-            likeBtn.classList.remove("active");
-            dislikeBtn.classList.remove("active");
-            updateIcons();
-          }
-        } catch (e) {
-          console.error("Error JSON Likes:", text);
-        }
+          const d = JSON.parse(t);
+          if (d.success) updateRateUI(d.likes, d.dislikes, d.action, type);
+        } catch (e) {}
       });
   }
-
   if (likeBtn) likeBtn.addEventListener("click", () => handleRate("like"));
   if (dislikeBtn)
     dislikeBtn.addEventListener("click", () => handleRate("dislike"));
-
-  function updateRateUI(likes, dislikes, action, typeTriggered) {
-    if (likeCountSpan) {
-      likeCountSpan.textContent = new Intl.NumberFormat().format(likes);
-    }
-
-    if (action === "removed") {
+  function updateRateUI(l, d, a, t) {
+    if (likeCountSpan)
+      likeCountSpan.textContent = new Intl.NumberFormat().format(l);
+    if (a === "removed") {
       likeBtn.classList.remove("active");
       dislikeBtn.classList.remove("active");
-    } else if (typeTriggered === "like") {
+    } else if (t === "like") {
       likeBtn.classList.add("active");
       dislikeBtn.classList.remove("active");
     } else {
       dislikeBtn.classList.add("active");
       likeBtn.classList.remove("active");
     }
-
     updateIcons();
   }
-
-  function showAuthError() {
-    showMessage("Debes iniciar sesión");
-    setTimeout(() => (window.location.href = "login.php"), 1500);
-  }
-
   updateIcons();
 });

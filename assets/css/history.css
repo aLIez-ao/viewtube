@@ -1,0 +1,163 @@
+/* assets/css/history.css */
+
+.history-container {
+    padding: 24px 40px; /* Padding izquierdo aumentado para separar del sidebar */
+    width: 100%;
+    /* Quitamos max-width restrictivo y margin auto para que se alinee a la izquierda */
+}
+
+.history-header {
+    margin-bottom: 32px;
+    padding-bottom: 0;
+}
+
+.history-header h5 {
+    font-weight: 700;
+    font-size: 24px; /* Texto más grande */
+    color: #0f0f0f;
+    margin: 0;
+}
+
+/* Contenedor de la lista limitado para que no sea ilegible en pantallas muy anchas */
+.history-list {
+    max-width: 1100px; 
+}
+
+/* Item de Historial */
+.history-item {
+    display: flex;
+    margin-bottom: 16px;
+    position: relative;
+    cursor: pointer;
+    transition: background-color 0.1s;
+    border-radius: 12px;
+    padding: 8px; /* Espacio para hover */
+    margin-left: -8px; /* Compensación visual para alinear con el título */
+}
+
+.history-item:hover {
+    background-color: #f2f2f2;
+}
+
+.history-item:hover .btn-remove-history {
+    display: flex; /* Mostrar botón X al pasar mouse */
+}
+
+/* Miniatura */
+.history-thumbnail-wrapper {
+    width: 246px; 
+    min-width: 246px;
+    height: 138px;
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-right: 16px;
+    background-color: #e0e0e0;
+}
+.history-thumbnail-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Badge duración */
+.duration-badge {
+    position: absolute;
+    bottom: 6px;
+    right: 6px;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 3px 6px;
+    border-radius: 4px;
+}
+
+/* Info */
+.history-info {
+    flex-grow: 1;
+    display: flex;
+    justify-content: space-between;
+    min-width: 0;
+    padding-top: 4px;
+}
+
+.history-meta {
+    max-width: 600px;
+    padding-right: 24px;
+}
+
+.history-title {
+    font-size: 18px;
+    font-weight: 500; /* Medium */
+    color: #0f0f0f;
+    text-decoration: none;
+    line-height: 1.4;
+    margin-bottom: 4px;
+    display: block;
+    
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.history-channel-row {
+    font-size: 12px;
+    color: #606060;
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+}
+.channel-link {
+    color: #606060;
+    text-decoration: none;
+}
+.channel-link:hover { color: #0f0f0f; }
+.dot { margin: 0 4px; }
+
+.history-description {
+    font-size: 12px;
+    color: #606060;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Botón Eliminar (X) */
+.btn-remove-history {
+    display: none; /* Oculto por defecto */
+    background: transparent;
+    border: none;
+    color: #606060;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    align-items: center;
+    justify-content: center;
+}
+.btn-remove-history:hover {
+    background-color: #e5e5e5;
+    color: #0f0f0f;
+}
+
+/* Estado Vacío */
+.empty-history {
+    text-align: center;
+    padding: 60px 20px;
+}
+.empty-history i { font-size: 80px; color: #e5e5e5; margin-bottom: 20px; }
+.empty-history h6 { font-weight: 600; margin: 0 0 8px 0; }
+.empty-history p { color: #606060; margin-bottom: 30px; }
+
+/* Responsividad */
+@media only screen and (max-width: 600px) {
+    .history-item { flex-direction: column; height: auto; }
+    .history-thumbnail-wrapper { width: 100%; min-width: 100%; height: auto; aspect-ratio: 16/9; margin-bottom: 10px; margin-right: 0; }
+    .btn-remove-history { display: flex; position: absolute; top: 0; right: 0; background: white; z-index: 2; }
+    .history-container { padding: 16px; }
+    .history-header h5 { font-size: 18px; }
+}

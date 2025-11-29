@@ -16,7 +16,7 @@
     <?php if (isset($_SESSION['user_id'])): ?>
         
         <!-- ENLACES PERSONALES -->
-        <li><a href="<?php echo BASE_URL; ?>construction.php" class="waves-effect"><i class="material-icons">history</i><span class="mini-text">Historial</span></a></li>
+        <li><a href="<?php echo BASE_URL; ?>history.php" class="waves-effect"><i class="material-icons">history</i><span class="mini-text">Historial</span></a></li>
         
         <!-- NUEVO: Listas de reproducción -->
         <li><a href="<?php echo BASE_URL; ?>construction.php" class="waves-effect"><i class="material-icons">playlist_play</i><span class="mini-text">Listas de reproducción</span></a></li>

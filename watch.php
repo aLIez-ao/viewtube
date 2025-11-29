@@ -66,6 +66,13 @@ if ($total_comments > 0) {
     }
 }
 
+if (isset($_SESSION['user_id'])) {
+    $uid = $_SESSION['user_id'];
+    // Insertar o actualizar "last_watched_at"
+    $conn->query("INSERT INTO history (user_id, video_id, last_watched_at) VALUES ($uid, $video_id, NOW()) 
+                  ON DUPLICATE KEY UPDATE last_watched_at = NOW()");
+}
+
 // FUNCIÓN RECURSIVA PARA RENDERIZAR
 function renderComments($parentId = 0, $level = 0, $comments_by_parent) {
     global $current_user_id;

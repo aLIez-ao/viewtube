@@ -67,136 +67,210 @@ document.addEventListener("DOMContentLoaded", function () {
   // 1. LÓGICA DE COMENTARIOS (COMPLETA)
   // =================================================
 
-  if (commentInput && submitCommentBtn && commentFormActions) {
-    // 0. Estado Inicial: Ocultar botones de acción
-    commentFormActions.style.display = "none";
+  // Variables Globales de Comentarios
+  let activeReplyForm = null;
 
-    // 1. Auto-resize del Textarea
+  // Función para inicializar comportamiento de formularios (Principal o Clonado)
+  function setupCommentForm(formContainer) {
+    const input = formContainer.querySelector("textarea");
+    const submitBtn = formContainer.querySelector("button:last-child"); // Comentar
+    const cancelBtn = formContainer.querySelector("button:first-child"); // Cancelar
+    const actionsDiv = formContainer.querySelector(".comment-form-actions");
+
+    // Estado inicial
+    if (!formContainer.classList.contains("reply-active")) {
+      actionsDiv.style.display = "none";
+    } else {
+      actionsDiv.style.display = "flex";
+    }
+
+    // Auto-resize
     const autoResize = () => {
-      commentInput.style.height = "auto";
-      commentInput.style.height = commentInput.scrollHeight + "px";
+      input.style.height = "auto";
+      input.style.height = input.scrollHeight + "px";
     };
-    commentInput.addEventListener("input", autoResize);
+    input.addEventListener("input", autoResize);
 
-    // 2. Mostrar botones al hacer foco (Click en el input)
-    commentInput.addEventListener("focus", function () {
-      commentFormActions.style.display = "flex";
+    // Foco (Solo para el principal)
+    if (!formContainer.classList.contains("reply-active")) {
+      input.addEventListener(
+        "focus",
+        () => (actionsDiv.style.display = "flex")
+      );
+    }
+
+    // Habilitar botón
+    input.addEventListener("input", () => {
+      if (input.value.trim().length > 0) submitBtn.removeAttribute("disabled");
+      else submitBtn.setAttribute("disabled", "true");
     });
 
-    // 3. Habilitar botón enviar si hay texto
-    commentInput.addEventListener("input", function () {
-      const text = this.value.trim();
-      if (text.length > 0) {
-        submitCommentBtn.removeAttribute("disabled");
+    // Cancelar
+    cancelBtn.addEventListener("click", () => {
+      input.value = "";
+      input.style.height = "auto";
+      submitBtn.setAttribute("disabled", "true");
+
+      if (formContainer.classList.contains("reply-active")) {
+        formContainer.remove(); // Eliminar form de respuesta
+        activeReplyForm = null;
       } else {
-        submitCommentBtn.setAttribute("disabled", "true");
+        actionsDiv.style.display = "none"; // Ocultar acciones del principal
+        input.blur();
       }
     });
 
-    // 4. Botón Cancelar (Limpiar y Ocultar)
-    if (cancelCommentBtn) {
-      cancelCommentBtn.addEventListener("click", function () {
-        // A. Limpiar texto
-        commentInput.value = "";
-        // B. Resetear altura del textarea
-        commentInput.style.height = "auto";
-        // C. Deshabilitar botón enviar
-        submitCommentBtn.setAttribute("disabled", "true");
-        // D. Ocultar botones de acción
-        commentFormActions.style.display = "none";
-        // E. Quitar foco del input (blur)
-        commentInput.blur();
-      });
-    }
-
-    // 5. Enviar Comentario
-    submitCommentBtn.addEventListener("click", function () {
-      const content = commentInput.value.trim();
+    // Enviar
+    submitBtn.addEventListener("click", () => {
+      const content = input.value.trim();
       const urlParams = new URLSearchParams(window.location.search);
       const videoId = urlParams.get("id");
+      // Obtener ID del padre si es una respuesta
+      const parentId = formContainer.getAttribute("data-parent-id") || 0;
 
       if (!content || !videoId) return;
 
-      // Deshabilitar para evitar doble envío
-      submitCommentBtn.disabled = true;
+      submitBtn.disabled = true;
 
       fetch("actions/post_comment.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ video_id: videoId, content: content }),
+        body: JSON.stringify({
+          video_id: videoId,
+          content: content,
+          parent_id: parentId,
+        }),
       })
-        .then((response) => response.json())
+        .then((res) => res.json())
         .then((data) => {
-          submitCommentBtn.disabled = false;
-
+          submitBtn.disabled = false;
           if (data.success) {
-            // Resetear formulario completamente al enviar exitosamente
-            commentInput.value = "";
-            commentInput.style.height = "auto";
-            submitCommentBtn.setAttribute("disabled", "true");
-            commentFormActions.style.display = "none"; // Ocultar botones
-            commentInput.blur(); // Quitar foco
+            input.value = "";
+            input.style.height = "auto";
+            submitBtn.setAttribute("disabled", "true");
 
-            prependComment(data.comment);
+            if (parentId > 0) {
+              // Insertar respuesta
+              insertReply(data.comment, parentId);
+              formContainer.remove();
+              activeReplyForm = null;
+            } else {
+              // Insertar comentario nuevo
+              prependComment(data.comment);
+              actionsDiv.style.display = "none";
+              input.blur();
+            }
             showMessage("Comentario publicado");
           } else if (data.error === "auth_required") {
             showMessage("Debes iniciar sesión");
-            setTimeout(() => (window.location.href = "login.php"), 1500);
           } else {
             showMessage("Error: " + data.error);
           }
         })
         .catch((err) => {
           console.error(err);
-          submitCommentBtn.disabled = false;
-          showMessage("Error de conexión");
+          submitBtn.disabled = false;
         });
     });
   }
 
-  // Función para insertar comentario nuevo al principio
-  function prependComment(commentData) {
-    if (!commentsList) return;
+  // Inicializar el formulario principal
+  const mainForm = document.querySelector(
+    ".main-comment-form .input-field-comment"
+  );
+  if (mainForm) setupCommentForm(mainForm);
 
-    // CORRECCIÓN DE ESPACIOS: HTML comprimido para evitar sangrías no deseadas
-    // Además añadimos los botones con sus clases para que el like funcione en los nuevos
-    const commentHTML = `
-            <div class="comment-item" style="animation: fadeIn 0.5s;">
-                <a href="#!" class="comment-avatar-link">
-                    <img src="${commentData.avatar}" alt="${commentData.username}">
-                </a>
-                <div class="comment-body">
-                    <div class="comment-header">
-                        <span class="author-name">${commentData.username}</span>
-                        <span class="comment-time">${commentData.date}</span>
-                    </div>
-                    <div class="comment-content">${commentData.content}</div>
-                    <div class="comment-actions-toolbar">
-                        <button class="btn-icon-comment like-comment-btn" data-comment-id="${commentData.id}">
-                            <i class="material-icons">thumb_up_alt</i>
-                            <span class="count-text"></span>
-                        </button>
-                        <button class="btn-icon-comment dislike-comment-btn" data-comment-id="${commentData.id}">
-                            <i class="material-icons">thumb_down_alt</i>
-                        </button>
-                        <button class="btn-reply-text">Responder</button>
-                    </div>
+  // Delegación para Botones "Responder"
+  if (commentsList) {
+    commentsList.addEventListener("click", (e) => {
+      const replyBtn = e.target.closest(".btn-reply-text");
+      if (replyBtn) {
+        const parentId = replyBtn.getAttribute("data-parent-id");
+        openReplyForm(parentId);
+      }
+    });
+  }
+
+  function openReplyForm(parentId) {
+    if (activeReplyForm) activeReplyForm.remove(); // Cerrar otros abiertos
+
+    const container = document.getElementById("reply-form-" + parentId);
+    if (!container) return;
+
+    const formHTML = `
+            <div class="input-field-comment reply-active" data-parent-id="${parentId}" style="margin-top: 16px;">
+                <textarea class="materialize-textarea" placeholder="Añade una respuesta..."></textarea>
+                <div class="comment-form-actions" style="display: flex;">
+                    <button class="btn-flat waves-effect">Cancelar</button>
+                    <button class="btn-flat waves-effect" disabled>Responder</button>
                 </div>
             </div>
         `;
 
+    container.innerHTML = formHTML;
+
+    const newForm = container.querySelector(".input-field-comment");
+    setupCommentForm(newForm);
+    activeReplyForm = newForm;
+    newForm.querySelector("textarea").focus();
+  }
+
+  // Función para insertar RESPUESTA visualmente
+  function insertReply(comment, parentId) {
+    const parentComment = document.getElementById("comment-" + parentId);
+    if (!parentComment) return;
+
+    let currentMargin = parseInt(parentComment.style.marginLeft || 0);
+    let newMargin = currentMargin + 48;
+    if (newMargin > 48) newMargin = 48; // Limitar sangría visual
+
+    const html = createCommentHTML(comment, newMargin);
+    const replyContainer = document.getElementById("reply-form-" + parentId);
+    // Insertamos después del contenedor de respuesta del padre (visualmente abajo)
+    // Ojo: insertAdjacentHTML en 'afterend' del padre lo pone como hermano siguiente
+    parentComment.insertAdjacentHTML("afterend", html);
+  }
+
+  // Función reutilizable para HTML de comentarios
+  function createCommentHTML(c, marginLeft = 0) {
+    return `
+            <div class="comment-item" id="comment-${c.id}" style="margin-left: ${marginLeft}px; animation: fadeIn 0.5s;">
+                <a href="#!" class="comment-avatar-link"><img src="${c.avatar}" alt="${c.username}"></a>
+                <div class="comment-body">
+                    <div class="comment-header">
+                        <span class="author-name">${c.username}</span>
+                        <span class="comment-time">${c.date}</span>
+                    </div>
+                    <div class="comment-content">${c.content}</div>
+                    <div class="comment-actions-toolbar">
+                        <button class="btn-icon-comment like-comment-btn" data-comment-id="${c.id}">
+                            <i class="material-icons">thumb_up_alt</i><span class="count-text"></span>
+                        </button>
+                        <button class="btn-icon-comment dislike-comment-btn" data-comment-id="${c.id}">
+                            <i class="material-icons">thumb_down_alt</i>
+                        </button>
+                        <button class="btn-reply-text" data-parent-id="${c.id}">Responder</button>
+                    </div>
+                    <div class="reply-form-container" id="reply-form-${c.id}"></div>
+                </div>
+            </div>
+        `;
+  }
+
+  function prependComment(c) {
+    if (!commentsList) return;
+    const html = createCommentHTML(c, 0);
     const emptyMsg = commentsList.querySelector("p.center-align");
     if (emptyMsg) emptyMsg.remove();
+    commentsList.insertAdjacentHTML("afterbegin", html);
+    updateCount();
+  }
 
-    commentsList.insertAdjacentHTML("afterbegin", commentHTML);
-
-    // Actualizar contador visualmente (Opcional)
-    const countTitle = document.querySelector(".comments-count-title");
-    if (countTitle) {
-      const currentText = countTitle.textContent;
-      const currentNum = parseInt(currentText.replace(/[^0-9]/g, "")) || 0;
-      countTitle.textContent =
-        new Intl.NumberFormat().format(currentNum + 1) + " comentarios";
+  function updateCount() {
+    const t = document.querySelector(".comments-count-title");
+    if (t) {
+      const n = parseInt(t.textContent.replace(/[^0-9]/g, "")) || 0;
+      t.textContent = new Intl.NumberFormat().format(n + 1) + " comentarios";
     }
   }
 
@@ -204,27 +278,20 @@ document.addEventListener("DOMContentLoaded", function () {
   // 2. LÓGICA DE LIKES EN COMENTARIOS (NUEVO)
   // =================================================
 
-  // Delegación de eventos para manejar clics en comentarios existentes Y nuevos
   if (commentsList) {
     commentsList.addEventListener("click", function (e) {
-      // Buscamos si el clic fue en un botón o dentro de él (icono)
       const likeBtn = e.target.closest(".like-comment-btn");
       const dislikeBtn = e.target.closest(".dislike-comment-btn");
 
-      if (likeBtn) {
-        handleCommentRate(likeBtn, "like");
-      } else if (dislikeBtn) {
-        handleCommentRate(dislikeBtn, "dislike");
-      }
+      if (likeBtn) handleCommentRate(likeBtn, "like");
+      else if (dislikeBtn) handleCommentRate(dislikeBtn, "dislike");
     });
   }
 
   function handleCommentRate(btn, type) {
     const commentId = btn.getAttribute("data-comment-id");
-    // Si es un comentario nuevo recién insertado, asegúrate de que el backend devuelva el ID real
     if (!commentId) return;
 
-    // Referencias a los elementos de este comentario específico
     const parentToolbar = btn.closest(".comment-actions-toolbar");
     const likeButton = parentToolbar.querySelector(".like-comment-btn");
     const dislikeButton = parentToolbar.querySelector(".dislike-comment-btn");
@@ -232,44 +299,31 @@ document.addEventListener("DOMContentLoaded", function () {
     const likeIcon = likeButton.querySelector("i");
     const dislikeIcon = dislikeButton.querySelector("i");
 
-    // Optimistic UI (Cambio visual inmediato)
+    // Optimistic UI
     if (type === "like") {
       const wasActive = likeButton.classList.contains("active-comment-rate");
       if (wasActive) {
-        // Quitar Like
         likeButton.classList.remove("active-comment-rate");
         likeIcon.textContent = "thumb_up_alt";
-        // Restar 1 visualmente
         let current = parseInt(countSpan.textContent) || 0;
         countSpan.textContent = current > 1 ? current - 1 : "";
       } else {
-        // Poner Like
         likeButton.classList.add("active-comment-rate");
-        likeIcon.textContent = "thumb_up"; // Relleno
+        likeIcon.textContent = "thumb_up";
+        dislikeButton.classList.remove("active-comment-rate");
+        dislikeIcon.textContent = "thumb_down_alt";
 
-        // Si tenía dislike, quitarlo
-        if (dislikeButton.classList.contains("active-comment-rate")) {
-          dislikeButton.classList.remove("active-comment-rate");
-          dislikeIcon.textContent = "thumb_down_alt";
-        }
-
-        // Sumar 1 visualmente
         let current = parseInt(countSpan.textContent) || 0;
         countSpan.textContent = current + 1;
       }
     } else {
-      // Dislike
       const wasActive = dislikeButton.classList.contains("active-comment-rate");
       if (wasActive) {
-        // Quitar Dislike
         dislikeButton.classList.remove("active-comment-rate");
         dislikeIcon.textContent = "thumb_down_alt";
       } else {
-        // Poner Dislike
         dislikeButton.classList.add("active-comment-rate");
-        dislikeIcon.textContent = "thumb_down"; // Relleno
-
-        // Si había like, quitarlo y restar
+        dislikeIcon.textContent = "thumb_down";
         if (likeButton.classList.contains("active-comment-rate")) {
           likeButton.classList.remove("active-comment-rate");
           likeIcon.textContent = "thumb_up_alt";
@@ -279,7 +333,7 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     }
 
-    // Petición AJAX al servidor
+    // Petición AJAX
     fetch("actions/rate_comment.php", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -288,11 +342,10 @@ document.addEventListener("DOMContentLoaded", function () {
       .then((response) => response.json())
       .then((data) => {
         if (data.success) {
-          // Confirmar contador real del servidor para asegurar consistencia
           countSpan.textContent = data.likes > 0 ? data.likes : "";
         } else if (data.error === "auth_required") {
           showMessage("Inicia sesión para valorar");
-          // Revertir UI (simplificado: recargar o quitar clases manualmente)
+          // Revertir UI
           likeButton.classList.remove("active-comment-rate");
           dislikeButton.classList.remove("active-comment-rate");
           likeIcon.textContent = "thumb_up_alt";
@@ -307,7 +360,7 @@ document.addEventListener("DOMContentLoaded", function () {
   // =================================================
 
   if (shareBtn && modalShareInstance) {
-    shareBtn.addEventListener("click", function (e) {
+    shareBtn.addEventListener("click", (e) => {
       e.preventDefault();
       modalShareInstance.open();
     });
@@ -316,10 +369,7 @@ document.addEventListener("DOMContentLoaded", function () {
       e.preventDefault();
       if (navigator.share) {
         navigator
-          .share({
-            title: document.title,
-            url: originalUrl,
-          })
+          .share({ title: document.title, url: originalUrl })
           .catch(console.error);
       } else {
         prompt("Copia este enlace:", originalUrl);
@@ -328,19 +378,11 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   if (copyLinkBtn && shareUrlInput) {
-    copyLinkBtn.addEventListener("click", function () {
+    copyLinkBtn.addEventListener("click", () => {
       shareUrlInput.select();
-      shareUrlInput.setSelectionRange(0, 99999);
-
-      if (navigator.clipboard) {
-        navigator.clipboard
-          .writeText(shareUrlInput.value)
-          .then(() => showMessage("Enlace copiado"))
-          .catch(() => showMessage("Error al copiar"));
-      } else {
-        document.execCommand("copy");
-        showMessage("Enlace copiado");
-      }
+      navigator.clipboard
+        .writeText(shareUrlInput.value)
+        .then(() => showMessage("Enlace copiado"));
     });
   }
 

@@ -265,7 +265,7 @@ h1.video-watch-title {
 #submitCommentBtn:not(:disabled) { background-color: #065fd4; color: white; }
 
 /* Items de Comentario */
-.comment-item { display: flex; align-items: flex-start; margin-bottom: 16px; }
+.comment-item { display: flex; align-items: flex-start; margin-bottom: 16px; transition: margin-left 0.2s; }
 .comment-avatar-link { width: 40px; height: 40px; border-radius: 50%; overflow: hidden; margin-right: 16px; flex-shrink: 0; display: block; }
 .comment-avatar-link img { width: 100%; height: 100%; object-fit: cover; }
 
@@ -298,3 +298,12 @@ h1.video-watch-title {
 .count-text { font-size: 12px; color: #606060; margin-left: 6px; }
 .btn-reply-text { background: transparent; border: none; cursor: pointer; padding: 8px 16px; border-radius: 18px; font-size: 12px; font-weight: 600; color: #0f0f0f; margin-left: 8px; }
 .btn-reply-text:hover { background-color: #e5e5e5; }
+
+/* Formularios de respuesta anidados */
+.reply-form-container { width: 100%; }
+.input-field-comment.reply-active { margin-bottom: 16px; animation: fadeIn 0.3s; }
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+}

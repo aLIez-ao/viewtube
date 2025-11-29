@@ -15,6 +15,8 @@ if (!isset($_SESSION['user_id'])) {
 $data = json_decode(file_get_contents('php://input'), true);
 $video_id = isset($data['video_id']) ? (int)$data['video_id'] : 0;
 $content = isset($data['content']) ? trim($data['content']) : '';
+// NUEVO: Recibir parent_id para respuestas
+$parent_id = isset($data['parent_id']) && (int)$data['parent_id'] > 0 ? (int)$data['parent_id'] : NULL;
 
 // 3. Validaciones
 if ($video_id <= 0) {
@@ -29,13 +31,14 @@ if (empty($content)) {
 
 $user_id = $_SESSION['user_id'];
 
-// 4. Insertar en BD
-$stmt = $conn->prepare("INSERT INTO comments (user_id, video_id, content) VALUES (?, ?, ?)");
-$stmt->bind_param("iis", $user_id, $video_id, $content);
+// 4. Insertar en BD (Incluyendo parent_id)
+$stmt = $conn->prepare("INSERT INTO comments (user_id, video_id, parent_id, content) VALUES (?, ?, ?, ?)");
+$stmt->bind_param("iiis", $user_id, $video_id, $parent_id, $content);
 
 if ($stmt->execute()) {
     $new_comment_id = $stmt->insert_id;
     
+    // Obtener datos del usuario para devolver al frontend
     $user_query = $conn->query("SELECT username, avatar FROM users WHERE id = $user_id");
     $user_data = $user_query->fetch_assoc();
     
@@ -52,9 +55,10 @@ if ($stmt->execute()) {
             'id' => $new_comment_id,
             'username' => $user_data['username'],
             'avatar' => $avatarUrl,
-            // CAMBIO: Solo escapamos el HTML, no convertimos newlines a <br>
+            // Solo escapamos HTML, NO usamos nl2br() para evitar doble salto con el CSS pre-wrap
             'content' => htmlspecialchars($content), 
-            'date' => 'hace unos segundos' 
+            'date' => 'hace unos segundos',
+            'parent_id' => $parent_id
         ]
     ]);
 } else {

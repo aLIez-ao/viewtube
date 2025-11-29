@@ -307,3 +307,79 @@ h1.video-watch-title {
     from { opacity: 0; transform: translateY(-5px); }
     to { opacity: 1; transform: translateY(0); }
 }
+
+/* --- AJUSTES EN CABECERA DE COMENTARIO --- */
+.comment-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+/* --- MENÚ DE OPCIONES DE COMENTARIO --- */
+.comment-menu-wrapper {
+    position: relative;
+    opacity: 0; /* Oculto por defecto */
+    transition: opacity 0.2s;
+}
+
+/* Mostrar botón solo al pasar el mouse por el comentario o si el menú está activo */
+.comment-item:hover .comment-menu-wrapper,
+.comment-menu-wrapper.active {
+    opacity: 1;
+}
+
+.btn-comment-menu {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #0f0f0f;
+}
+.btn-comment-menu:hover {
+    background-color: #e5e5e5;
+}
+.btn-comment-menu i {
+    font-size: 20px;
+}
+
+/* El menú desplegable */
+.comment-dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+    padding: 8px 0;
+    z-index: 100;
+    min-width: 150px;
+    border: 1px solid #e5e5e5;
+}
+
+.comment-menu-wrapper.active .comment-dropdown-menu {
+    display: block;
+}
+
+.menu-option {
+    padding: 8px 16px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-size: 14px;
+    color: #0f0f0f;
+}
+.menu-option:hover {
+    background-color: #f2f2f2;
+}
+.menu-option i {
+    margin-right: 12px;
+    font-size: 20px;
+    color: #606060;
+}

@@ -1,29 +1,74 @@
 /* assets/css/history.css */
 
-.history-container {
-    padding: 24px 40px; /* Padding izquierdo aumentado para separar del sidebar */
-    width: 100%;
-    /* Quitamos max-width restrictivo y margin auto para que se alinee a la izquierda */
+/* --- LAYOUT GENERAL DE PÁGINA --- */
+.history-page-layout {
+    display: flex;
+    justify-content: center; /* Centrar el bloque máximo */
+    padding: 24px 24px;
+    gap: 40px; /* Espacio entre columnas */
+    max-width: 1280px; /* Ancho máximo similar a YT */
+    margin: 0; /* Alineado a la izquierda según tu petición anterior, o auto para centro */
+    margin-left: 24px; /* Un poco de margen izquierdo si está pegado al sidebar */
 }
 
-.history-header {
-    margin-bottom: 32px;
-    padding-bottom: 0;
+/* Columna Izquierda (Contenido) */
+.history-main-content {
+    flex: 1; /* Ocupa el espacio restante */
+    min-width: 0; /* Evita desbordes flex */
+    padding-bottom: 40px;
 }
 
-.history-header h5 {
+/* Columna Derecha (Sidebar Fijo Visualmente) */
+.history-sidebar {
+    width: 380px; /* Ancho fijo para el panel derecho */
+    flex-shrink: 0; /* No encoger */
+    padding-top: 10px;
+}
+
+/* --- TÍTULO Y FILTROS --- */
+.history-page-title {
+    font-size: 24px;
     font-weight: 700;
-    font-size: 24px; /* Texto más grande */
     color: #0f0f0f;
-    margin: 0;
+    margin: 0 0 24px 0;
 }
 
-/* Contenedor de la lista limitado para que no sea ilegible en pantallas muy anchas */
-.history-list {
-    max-width: 1100px; 
+/* Chips / Filtros */
+.history-filters {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 32px;
 }
 
-/* Item de Historial */
+.filter-chip {
+    border: none;
+    background-color: rgba(0,0,0,0.05);
+    color: #0f0f0f;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+.filter-chip:hover {
+    background-color: rgba(0,0,0,0.1);
+}
+.filter-chip.active {
+    background-color: #0f0f0f;
+    color: white;
+}
+
+/* Encabezado de Fecha */
+.history-date-header {
+    font-size: 16px;
+    font-weight: 600;
+    color: #0f0f0f;
+    margin-bottom: 16px;
+}
+
+
+/* --- LISTA DE VIDEOS (ITEMS) --- */
 .history-item {
     display: flex;
     margin-bottom: 16px;
@@ -31,22 +76,16 @@
     cursor: pointer;
     transition: background-color 0.1s;
     border-radius: 12px;
-    padding: 8px; /* Espacio para hover */
-    margin-left: -8px; /* Compensación visual para alinear con el título */
+    padding: 8px; 
+    margin-left: -8px; /* Compensación del padding hover */
 }
-
-.history-item:hover {
-    background-color: #f2f2f2;
-}
-
-.history-item:hover .btn-remove-history {
-    display: flex; /* Mostrar botón X al pasar mouse */
-}
+.history-item:hover { background-color: #f2f2f2; }
+.history-item:hover .btn-remove-history { display: flex; }
 
 /* Miniatura */
 .history-thumbnail-wrapper {
     width: 246px; 
-    min-width: 246px;
+    min-width: 246px; /* Fijo como en YT */
     height: 138px;
     position: relative;
     border-radius: 8px;
@@ -54,26 +93,15 @@
     margin-right: 16px;
     background-color: #e0e0e0;
 }
-.history-thumbnail-wrapper img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
+.history-thumbnail-wrapper img { width: 100%; height: 100%; object-fit: cover; }
 
-/* Badge duración */
 .duration-badge {
-    position: absolute;
-    bottom: 6px;
-    right: 6px;
-    background-color: rgba(0, 0, 0, 0.8);
-    color: white;
-    font-size: 12px;
-    font-weight: 500;
-    padding: 3px 6px;
-    border-radius: 4px;
+    position: absolute; bottom: 6px; right: 6px;
+    background-color: rgba(0, 0, 0, 0.8); color: white;
+    font-size: 12px; font-weight: 500; padding: 3px 6px; border-radius: 4px;
 }
 
-/* Info */
+/* Info Video */
 .history-info {
     flex-grow: 1;
     display: flex;
@@ -81,83 +109,109 @@
     min-width: 0;
     padding-top: 4px;
 }
-
-.history-meta {
-    max-width: 600px;
-    padding-right: 24px;
-}
+.history-meta { max-width: 600px; padding-right: 24px; }
 
 .history-title {
-    font-size: 18px;
-    font-weight: 500; /* Medium */
-    color: #0f0f0f;
-    text-decoration: none;
-    line-height: 1.4;
-    margin-bottom: 4px;
-    display: block;
-    
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
+    font-size: 18px; font-weight: 500; color: #0f0f0f;
+    text-decoration: none; line-height: 1.4; margin-bottom: 4px; display: block;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
 }
-
 .history-channel-row {
-    font-size: 12px;
-    color: #606060;
-    display: flex;
-    align-items: center;
-    margin-bottom: 8px;
+    font-size: 12px; color: #606060; display: flex; align-items: center; margin-bottom: 8px;
 }
-.channel-link {
-    color: #606060;
-    text-decoration: none;
-}
+.channel-link { color: #606060; text-decoration: none; }
 .channel-link:hover { color: #0f0f0f; }
 .dot { margin: 0 4px; }
-
 .history-description {
-    font-size: 12px;
-    color: #606060;
-    line-height: 1.4;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
+    font-size: 12px; color: #606060; line-height: 1.4;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
 }
 
-/* Botón Eliminar (X) */
+/* Botón X */
 .btn-remove-history {
-    display: none; /* Oculto por defecto */
+    display: none; background: transparent; border: none; color: #606060;
+    cursor: pointer; width: 40px; height: 40px; border-radius: 50%;
+    align-items: center; justify-content: center;
+}
+.btn-remove-history:hover { background-color: #e5e5e5; color: #0f0f0f; }
+
+
+/* --- SIDEBAR DERECHO (BUSCADOR Y GESTIÓN) --- */
+
+/* Buscador (Estilo línea abajo) */
+.history-search-box {
+    position: relative;
+    margin-bottom: 32px;
+}
+.history-search-box i {
+    position: absolute; 
+    left: 0; 
+    top: 50%;
+    transform: translateY(-50%); /* Centrado vertical perfecto */
+    font-size: 24px; 
+    color: #606060;
+    pointer-events: none; /* Evita que el icono bloquee clicks */
+}
+.history-search-box input {
+    width: 100%;
+    /* Aumentamos el padding-left y usamos !important para evitar conflictos con Materialize */
+    padding: 0 0 0 40px !important; 
+    border: none !important;
+    border-bottom: 1px solid #909090 !important;
+    box-shadow: none !important;
+    font-size: 15px;
+    height: 40px !important;
+    margin: 0 !important;
+    color: #0f0f0f;
+    transition: border-bottom 0.2s;
+    background: transparent;
+    box-sizing: border-box !important;
+}
+.history-search-box input:focus {
+    border-bottom: 2px solid #0f0f0f !important;
+}
+.history-search-box input::placeholder { color: #606060; }
+
+/* Botones de Gestión */
+.history-manage-actions {
+    display: flex;
+    flex-direction: column;
+}
+
+.btn-manage-action {
+    display: flex;
+    align-items: center;
     background: transparent;
     border: none;
-    color: #606060;
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: 24px; /* Redondeado suave tipo pastilla */
     cursor: pointer;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    align-items: center;
-    justify-content: center;
-}
-.btn-remove-history:hover {
-    background-color: #e5e5e5;
+    text-align: left;
     color: #0f0f0f;
+    font-size: 14px;
+    font-weight: 400;
+    margin-bottom: 4px;
+}
+.btn-manage-action:hover {
+    background-color: rgba(0,0,0,0.05);
+}
+.btn-manage-action i {
+    margin-right: 16px;
+    color: #0f0f0f; 
+    font-size: 24px;
 }
 
-/* Estado Vacío */
-.empty-history {
-    text-align: center;
-    padding: 60px 20px;
-}
-.empty-history i { font-size: 80px; color: #e5e5e5; margin-bottom: 20px; }
-.empty-history h6 { font-weight: 600; margin: 0 0 8px 0; }
-.empty-history p { color: #606060; margin-bottom: 30px; }
 
-/* Responsividad */
-@media only screen and (max-width: 600px) {
+/* Responsividad: En móvil apilamos columnas */
+@media only screen and (max-width: 1000px) {
+    .history-page-layout { flex-direction: column-reverse; gap: 20px; padding: 16px; margin: 0; }
+    .history-sidebar { width: 100%; padding-top: 0; }
+    .history-search-box { margin-bottom: 16px; }
+    
     .history-item { flex-direction: column; height: auto; }
     .history-thumbnail-wrapper { width: 100%; min-width: 100%; height: auto; aspect-ratio: 16/9; margin-bottom: 10px; margin-right: 0; }
+    
     .btn-remove-history { display: flex; position: absolute; top: 0; right: 0; background: white; z-index: 2; }
-    .history-container { padding: 16px; }
-    .history-header h5 { font-size: 18px; }
+    .history-title { font-size: 16px; }
 }

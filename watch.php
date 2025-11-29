@@ -12,6 +12,25 @@ $video_id = (int)$_GET['id'];
 $page_layout = 'watch';
 $current_user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 0;
 
+// ======================================================
+// 0. REGISTRAR HISTORIAL (¡ESTO ES LO QUE FALTABA!)
+// ======================================================
+if ($current_user_id > 0) {
+    // Verificar si el usuario tiene el historial pausado
+    $u_check = $conn->query("SELECT history_paused FROM users WHERE id = $current_user_id");
+    if ($u_check) {
+        $u_row = $u_check->fetch_assoc();
+        
+        // Si history_paused es 0 (Falso/Activo), guardamos la visita
+        if ($u_row['history_paused'] == 0) {
+            // Borramos registro anterior de este video para que al insertar quede el más nuevo
+            $conn->query("DELETE FROM history WHERE user_id = $current_user_id AND video_id = $video_id");
+            // Insertamos la nueva visita
+            $conn->query("INSERT INTO history (user_id, video_id, last_watched_at) VALUES ($current_user_id, $video_id, NOW())");
+        }
+    }
+}
+
 // 1. QUERY PRINCIPAL
 $sql = "SELECT v.*, c.id AS channel_id, c.name AS channel_name, c.subscribers_count, u.avatar, u.username 
         FROM videos v 
@@ -66,13 +85,6 @@ if ($total_comments > 0) {
     }
 }
 
-if (isset($_SESSION['user_id'])) {
-    $uid = $_SESSION['user_id'];
-    // Insertar o actualizar "last_watched_at"
-    $conn->query("INSERT INTO history (user_id, video_id, last_watched_at) VALUES ($uid, $video_id, NOW()) 
-                  ON DUPLICATE KEY UPDATE last_watched_at = NOW()");
-}
-
 // FUNCIÓN RECURSIVA PARA RENDERIZAR
 function renderComments($parentId = 0, $level = 0, $comments_by_parent) {
     global $current_user_id;
@@ -124,7 +136,6 @@ function renderComments($parentId = 0, $level = 0, $comments_by_parent) {
                 </div>
 
                 <!-- CONTENIDO DEL COMENTARIO -->
-                <!-- IMPORTANTE: Todo pegado para evitar espacios extra. Sin nl2br() para evitar doble salto -->
                 <div class="comment-content" id="comment-content-<?php echo $comment['id']; ?>"><?php echo htmlspecialchars($comment['content']); ?></div>
                 
                 <div class="comment-actions-toolbar">
@@ -200,8 +211,7 @@ require_once 'includes/header.php';
                 <div class="row" style="margin-bottom: 0;">
                     <div class="col s12">
                         <strong><?php echo number_format($video['views']); ?> vistas • <?php echo timeAgo($video['created_at']); ?></strong>
-                        <!-- Descripción también sin nl2br() para coherencia con pre-wrap -->
-                        <div class="description-text"><?php echo htmlspecialchars($video['description']); ?></div>
+                        <div class="description-text"><?php echo nl2br($video['description']); ?></div>
                     </div>
                 </div>
             </div>

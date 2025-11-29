@@ -159,6 +159,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (!commentsList) return;
 
     // CORRECCIÓN DE ESPACIOS: HTML comprimido para evitar sangrías no deseadas
+    // Además añadimos los botones con sus clases para que el like funcione en los nuevos
     const commentHTML = `
             <div class="comment-item" style="animation: fadeIn 0.5s;">
                 <a href="#!" class="comment-avatar-link">
@@ -171,11 +172,11 @@ document.addEventListener("DOMContentLoaded", function () {
                     </div>
                     <div class="comment-content">${commentData.content}</div>
                     <div class="comment-actions-toolbar">
-                        <button class="btn-icon-comment like-comment">
+                        <button class="btn-icon-comment like-comment-btn" data-comment-id="${commentData.id}">
                             <i class="material-icons">thumb_up_alt</i>
                             <span class="count-text"></span>
                         </button>
-                        <button class="btn-icon-comment dislike-comment">
+                        <button class="btn-icon-comment dislike-comment-btn" data-comment-id="${commentData.id}">
                             <i class="material-icons">thumb_down_alt</i>
                         </button>
                         <button class="btn-reply-text">Responder</button>
@@ -200,7 +201,109 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // =================================================
-  // 2. LÓGICA COMPARTIR
+  // 2. LÓGICA DE LIKES EN COMENTARIOS (NUEVO)
+  // =================================================
+
+  // Delegación de eventos para manejar clics en comentarios existentes Y nuevos
+  if (commentsList) {
+    commentsList.addEventListener("click", function (e) {
+      // Buscamos si el clic fue en un botón o dentro de él (icono)
+      const likeBtn = e.target.closest(".like-comment-btn");
+      const dislikeBtn = e.target.closest(".dislike-comment-btn");
+
+      if (likeBtn) {
+        handleCommentRate(likeBtn, "like");
+      } else if (dislikeBtn) {
+        handleCommentRate(dislikeBtn, "dislike");
+      }
+    });
+  }
+
+  function handleCommentRate(btn, type) {
+    const commentId = btn.getAttribute("data-comment-id");
+    // Si es un comentario nuevo recién insertado, asegúrate de que el backend devuelva el ID real
+    if (!commentId) return;
+
+    // Referencias a los elementos de este comentario específico
+    const parentToolbar = btn.closest(".comment-actions-toolbar");
+    const likeButton = parentToolbar.querySelector(".like-comment-btn");
+    const dislikeButton = parentToolbar.querySelector(".dislike-comment-btn");
+    const countSpan = likeButton.querySelector(".count-text");
+    const likeIcon = likeButton.querySelector("i");
+    const dislikeIcon = dislikeButton.querySelector("i");
+
+    // Optimistic UI (Cambio visual inmediato)
+    if (type === "like") {
+      const wasActive = likeButton.classList.contains("active-comment-rate");
+      if (wasActive) {
+        // Quitar Like
+        likeButton.classList.remove("active-comment-rate");
+        likeIcon.textContent = "thumb_up_alt";
+        // Restar 1 visualmente
+        let current = parseInt(countSpan.textContent) || 0;
+        countSpan.textContent = current > 1 ? current - 1 : "";
+      } else {
+        // Poner Like
+        likeButton.classList.add("active-comment-rate");
+        likeIcon.textContent = "thumb_up"; // Relleno
+
+        // Si tenía dislike, quitarlo
+        if (dislikeButton.classList.contains("active-comment-rate")) {
+          dislikeButton.classList.remove("active-comment-rate");
+          dislikeIcon.textContent = "thumb_down_alt";
+        }
+
+        // Sumar 1 visualmente
+        let current = parseInt(countSpan.textContent) || 0;
+        countSpan.textContent = current + 1;
+      }
+    } else {
+      // Dislike
+      const wasActive = dislikeButton.classList.contains("active-comment-rate");
+      if (wasActive) {
+        // Quitar Dislike
+        dislikeButton.classList.remove("active-comment-rate");
+        dislikeIcon.textContent = "thumb_down_alt";
+      } else {
+        // Poner Dislike
+        dislikeButton.classList.add("active-comment-rate");
+        dislikeIcon.textContent = "thumb_down"; // Relleno
+
+        // Si había like, quitarlo y restar
+        if (likeButton.classList.contains("active-comment-rate")) {
+          likeButton.classList.remove("active-comment-rate");
+          likeIcon.textContent = "thumb_up_alt";
+          let current = parseInt(countSpan.textContent) || 0;
+          countSpan.textContent = current > 1 ? current - 1 : "";
+        }
+      }
+    }
+
+    // Petición AJAX al servidor
+    fetch("actions/rate_comment.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ comment_id: commentId, type: type }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          // Confirmar contador real del servidor para asegurar consistencia
+          countSpan.textContent = data.likes > 0 ? data.likes : "";
+        } else if (data.error === "auth_required") {
+          showMessage("Inicia sesión para valorar");
+          // Revertir UI (simplificado: recargar o quitar clases manualmente)
+          likeButton.classList.remove("active-comment-rate");
+          dislikeButton.classList.remove("active-comment-rate");
+          likeIcon.textContent = "thumb_up_alt";
+          dislikeIcon.textContent = "thumb_down_alt";
+        }
+      })
+      .catch((err) => console.error(err));
+  }
+
+  // =================================================
+  // 3. LÓGICA COMPARTIR
   // =================================================
 
   if (shareBtn && modalShareInstance) {
@@ -253,7 +356,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // =================================================
-  // 3. LÓGICA DE SUSCRIPCIÓN Y LIKES
+  // 4. LÓGICA DE SUSCRIPCIÓN Y LIKES DE VIDEO
   // =================================================
 
   if (subscribeBtn) {
@@ -302,7 +405,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (sp) sp.textContent = c + " suscriptores";
   }
 
-  // LIKES
+  // LIKES VIDEO PRINCIPAL
   function updateIcons() {
     if (!likeBtn) return;
     const i1 = likeBtn.querySelector("i"),

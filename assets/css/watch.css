@@ -240,8 +240,8 @@ h1.video-watch-title {
     box-shadow: none !important;
     font-size: 14px;
     margin-bottom: 8px !important;
-    resize: none; /* Sin resize manual */
-    overflow-y: hidden; /* Sin scrollbar, crece auto con JS */
+    resize: none; 
+    overflow-y: hidden; 
     min-height: 24px;
     padding: 0;
     width: 100%;
@@ -256,7 +256,7 @@ h1.video-watch-title {
 
 /* Botones de acción (Cancelar/Comentar) */
 .comment-form-actions { 
-    display: flex; /* Oculto inicialmente con JS */
+    display: flex;
     justify-content: flex-end; 
     gap: 8px; 
 }
@@ -274,19 +274,27 @@ h1.video-watch-title {
 .author-name { font-weight: 600; color: #0f0f0f; margin-right: 4px; text-decoration: none; cursor: pointer; }
 .comment-time { color: #606060; font-size: 12px; }
 
+/* CONTENIDO DE COMENTARIO */
 .comment-content {
     font-size: 14px;
     color: #0f0f0f;
     line-height: 1.4;
     margin-bottom: 8px;
     word-wrap: break-word;
-    white-space: pre-wrap; /* Respeta saltos de línea y espacios */
+    white-space: pre-wrap; /* Mantiene saltos de línea y espacios */
 }
 
+/* ACCIONES DE COMENTARIO (Like/Dislike) */
 .comment-actions-toolbar { display: flex; align-items: center; gap: 0; }
 .btn-icon-comment { background: transparent; border: none; cursor: pointer; padding: 8px; border-radius: 50%; display: flex; align-items: center; color: #0f0f0f; }
 .btn-icon-comment:hover { background-color: #e5e5e5; }
 .btn-icon-comment i { font-size: 16px; }
+
+/* Estado Activo (Like/Dislike dado) */
+.btn-icon-comment.active-comment-rate i {
+    color: #0f0f0f; 
+}
+
 .count-text { font-size: 12px; color: #606060; margin-left: 6px; }
 .btn-reply-text { background: transparent; border: none; cursor: pointer; padding: 8px 16px; border-radius: 18px; font-size: 12px; font-weight: 600; color: #0f0f0f; margin-left: 8px; }
 .btn-reply-text:hover { background-color: #e5e5e5; }

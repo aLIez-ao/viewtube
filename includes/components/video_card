@@ -1,0 +1,48 @@
+<?php
+if (!isset($video)) return; 
+?>
+
+<div class="video-card">
+    <!-- Enlace al video (Miniatura) -->
+    <a href="watch.php?id=<?php echo $video['id']; ?>">
+        <div class="thumbnail-container">
+            <?php 
+                $thumb = !empty($video['thumbnail_url']) ? $video['thumbnail_url'] : "https://img.youtube.com/vi/{$video['youtube_id']}/mqdefault.jpg";
+            ?>
+            <img src="<?php echo $thumb; ?>" alt="Miniatura" loading="lazy">
+            <span class="duration-badge"><?php echo formatDuration($video['duration']); ?></span>
+        </div>
+    </a>
+
+    <div class="video-info">
+        <!-- Enlace al CANAL (Avatar) -->
+        <div class="channel-avatar">
+            <!-- CORRECCIÓN: Enlace apuntando a channel.php usando el ID del canal -->
+            <a href="channel.php?id=<?php echo $video['channel_id']; ?>">
+                <img src="https://ui-avatars.com/api/?name=<?php echo urlencode($video['channel_name']); ?>&background=random&color=fff&size=64" alt="Avatar">
+            </a>
+        </div>
+        
+        <div class="video-details">
+            <!-- Título del video -->
+            <a href="watch.php?id=<?php echo $video['id']; ?>" class="video-title">
+                <?php echo $video['title']; ?>
+            </a>
+            
+            <!-- Enlace al CANAL (Nombre) -->
+            <!-- CORRECCIÓN: Enlace apuntando a channel.php -->
+            <a href="channel.php?id=<?php echo $video['channel_id']; ?>" class="channel-name">
+                <?php echo $video['channel_name']; ?> 
+                <i class="material-icons tiny" style="vertical-align: middle; font-size: 14px; margin-left: 2px;">check_circle</i>
+            </a>
+            
+            <div class="video-meta">
+                <?php echo number_format($video['views']); ?> vistas • <?php echo timeAgo($video['created_at']); ?>
+            </div>
+        </div>
+        
+        <div class="video-menu">
+            <i class="material-icons">more_vert</i>
+        </div>
+    </div>
+</div>

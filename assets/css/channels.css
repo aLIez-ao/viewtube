@@ -1,0 +1,150 @@
+/* assets/css/channel.css */
+
+.channel-page-container {
+    padding: 0 !important; /* Quitamos padding del container fluido para que el banner llegue al borde */
+    max-width: 100%;
+}
+
+/* Banner */
+.channel-banner {
+    height: 17vw; /* Altura proporcional */
+    min-height: 100px;
+    max-height: 210px;
+    background: linear-gradient(to right, #c31432, #240b36); /* Gradiente por defecto */
+    width: 100%;
+}
+
+/* Cabecera */
+.channel-header {
+    max-width: 1284px;
+    margin: 0 auto;
+    padding: 16px 24px 4px;
+    display: flex;
+    align-items: flex-start;
+}
+
+.channel-header-left {
+    display: flex;
+    align-items: flex-start;
+    width: 100%;
+}
+
+.channel-page-avatar {
+    margin-right: 24px;
+    flex-shrink: 0;
+}
+
+.channel-page-avatar img {
+    width: 128px;
+    height: 128px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.channel-page-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-top: 8px;
+}
+
+.channel-page-info h1 {
+    font-size: 36px;
+    font-weight: 700;
+    color: #0f0f0f;
+    margin: 0 0 4px 0;
+    line-height: 1.2;
+}
+
+.channel-meta-text {
+    color: #606060;
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+
+.channel-description {
+    color: #606060;
+    font-size: 14px;
+    line-height: 1.4;
+    max-width: 700px;
+    margin-bottom: 12px;
+    /* Truncar a 1 línea si es muy largo, opcional */
+    white-space: nowrap; 
+    overflow: hidden; 
+    text-overflow: ellipsis;
+    cursor: pointer;
+}
+
+.channel-actions {
+    margin-top: 4px;
+}
+
+/* Botón Suscripción Canal */
+.btn-subscribe-channel {
+    background-color: #0f0f0f;
+    color: white;
+    border-radius: 18px;
+    padding: 0 24px;
+    height: 36px;
+    font-size: 14px;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+.btn-subscribe-channel:hover { background-color: #333; }
+
+.btn-subscribe-channel.subscribed {
+    background-color: #f2f2f2;
+    color: #0f0f0f;
+    border: 1px solid #e5e5e5;
+}
+.btn-subscribe-channel.subscribed:hover { background-color: #e5e5e5; }
+.btn-subscribe-channel.disabled { opacity: 0.6; cursor: default; }
+
+
+/* Pestañas */
+.channel-tabs {
+    max-width: 1284px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    gap: 32px;
+}
+
+.channel-tabs .tab {
+    padding: 12px 0;
+    font-size: 15px;
+    font-weight: 500;
+    color: #606060;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    text-transform: uppercase;
+}
+
+.channel-tabs .tab.active {
+    color: #0f0f0f;
+    border-bottom: 2px solid #0f0f0f;
+}
+
+/* Contenido */
+.channel-content {
+    max-width: 1284px;
+    margin: 0 auto;
+    padding: 0 24px 40px;
+}
+
+.empty-channel {
+    padding: 40px;
+    text-align: center;
+    color: #606060;
+}
+
+/* Responsividad */
+@media only screen and (max-width: 700px) {
+    .channel-header-left { flex-direction: column; align-items: center; text-align: center; }
+    .channel-page-avatar { margin-right: 0; margin-bottom: 16px; }
+    .channel-page-avatar img { width: 80px; height: 80px; }
+    .channel-page-info h1 { font-size: 24px; }
+    .channel-tabs { justify-content: center; gap: 20px; }
+}

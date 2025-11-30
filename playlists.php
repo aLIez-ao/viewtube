@@ -97,9 +97,6 @@ require_once 'includes/header.php';
                     <a href="playlist.php?id=<?php echo $playlist['id']; ?>" class="playlist-thumbnail-wrapper">
                         <?php 
                             $cover = !empty($playlist['cover_url']) ? $playlist['cover_url'] : BASE_URL . 'assets/img/no-video.png';
-                            
-                            // Si es la lista de "Ver más tarde", podríamos ponerle un icono especial si quisieras, 
-                            // pero aquí usaremos la lógica estándar de portada.
                         ?>
                         
                         <img src="<?php echo $cover; ?>" alt="<?php echo htmlspecialchars($playlist['title']); ?>" onerror="this.src='https://via.placeholder.com/320x180?text=Vacio'">

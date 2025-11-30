@@ -18,7 +18,7 @@
 
         <li><a href="<?php echo BASE_URL; ?>history.php" class="waves-effect"><i class="material-icons">history</i><span class="mini-text">Historial</span></a></li>
         <li><a href="<?php echo BASE_URL; ?>playlists.php" class="waves-effect"><i class="material-icons">playlist_play</i><span class="mini-text">Listas de reproducción</span></a></li>
-        <li><a href="<?php echo BASE_URL; ?>construction.php" class="waves-effect"><i class="material-icons">smart_display</i><span class="mini-text">Mis videos</span></a></li>
+        <li><a href="<?php echo BASE_URL; ?>studio.php" class="waves-effect"><i class="material-icons">smart_display</i><span class="mini-text">Mis videos</span></a></li>
         <li><a href="<?php echo BASE_URL; ?>watch_later.php" class="waves-effect"><i class="material-icons">watch_later</i><span class="mini-text">Ver más tarde</span></a></li>
         <li><a href="<?php echo BASE_URL; ?>liked.php" class="waves-effect"><i class="material-icons">thumb_up</i><span class="mini-text">Videos que me gustan</span></a></li>
 

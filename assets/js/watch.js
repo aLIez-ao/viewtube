@@ -8,13 +8,26 @@ document.addEventListener("DOMContentLoaded", function () {
   const likeBtn = document.getElementById("likeBtn");
   const dislikeBtn = document.getElementById("dislikeBtn");
   const likeCountSpan = document.getElementById("likeCount");
+
+  // --- ELEMENTOS COMPARTIR ---
   const shareBtn = document.getElementById("shareBtn");
   const shareModal = document.getElementById("shareModal");
   const shareUrlInput = document.getElementById("shareUrlInput");
   const copyLinkBtn = document.getElementById("copyLinkBtn");
   const startAtCheckbox = document.getElementById("startAtCheckbox");
 
-  // Redes sociales (Selectores más seguros)
+  // --- ELEMENTOS GUARDAR EN LISTA (NUEVO) ---
+  const saveBtn = document.getElementById("saveBtn");
+  const saveModal = document.getElementById("saveModal");
+  const playlistsList = document.getElementById("playlistsList");
+  const createView = document.getElementById("createPlaylistView");
+  const saveFooter = document.getElementById("saveModalFooter");
+  const showCreateBtn = document.getElementById("showCreateFormBtn");
+  const cancelCreateBtn = document.getElementById("cancelCreateBtn");
+  const confirmCreateBtn = document.getElementById("confirmCreateBtn");
+  const newPlaylistInput = document.getElementById("newPlaylistName");
+
+  // Redes sociales
   const shareWhatsapp = document.querySelector(
     '.social-icon[title="WhatsApp"]'
   );
@@ -34,10 +47,16 @@ document.addEventListener("DOMContentLoaded", function () {
   const commentInput = document.getElementById("commentInput");
   const submitCommentBtn = document.getElementById("submitCommentBtn");
   const commentsList = document.querySelector(".comments-list");
+  const commentFormWrapper = document.querySelector(".main-comment-form");
+  const commentFormActions = commentFormWrapper
+    ? commentFormWrapper.querySelector(".comment-form-actions")
+    : null;
+  const cancelCommentBtn = commentFormActions
+    ? commentFormActions.querySelector("button:first-child")
+    : null;
 
   // --- UTILIDADES ---
   const M_AVAILABLE = typeof M !== "undefined";
-
   function showMessage(msg) {
     if (M_AVAILABLE) M.toast({ html: msg });
     else console.log("Toast:", msg);
@@ -46,38 +65,39 @@ document.addEventListener("DOMContentLoaded", function () {
   // --- INICIALIZAR MODALES ---
   let modalUnsubInstance = null;
   let modalShareInstance = null;
+  let modalSaveInstance = null;
 
   if (M_AVAILABLE) {
     if (unsubscribeModal) {
       try {
         modalUnsubInstance = M.Modal.init(unsubscribeModal, { opacity: 0.5 });
-      } catch (e) {
-        console.error("Error init unsub modal", e);
-      }
+      } catch (e) {}
     }
     if (shareModal) {
       try {
         modalShareInstance = M.Modal.init(shareModal, {
           opacity: 0.5,
           onOpenStart: () => {
-            // Restaurar estado al abrir
             if (startAtCheckbox) startAtCheckbox.checked = false;
             if (shareUrlInput) shareUrlInput.value = originalUrl;
-            // Actualizar enlaces con la URL original por defecto
             updateShareLinks(originalUrl);
           },
         });
+      } catch (e) {}
+    }
+    // Inicializar Modal de Guardar
+    if (saveModal) {
+      try {
+        modalSaveInstance = M.Modal.init(saveModal, { opacity: 0.5 });
       } catch (e) {
-        console.error("Error init share modal", e);
+        console.error("Error init save modal", e);
       }
     }
   }
 
-  // Función auxiliar para actualizar los hrefs de compartir
   function updateShareLinks(url) {
     const encodedUrl = encodeURIComponent(url);
     const text = encodeURIComponent("Mira este video: ");
-
     if (shareWhatsapp)
       shareWhatsapp.href = `https://wa.me/?text=${text}${encodedUrl}`;
     if (shareFacebook)
@@ -91,34 +111,28 @@ document.addEventListener("DOMContentLoaded", function () {
   // =================================================
   // 1. LÓGICA DE COMENTARIOS
   // =================================================
-
   let activeReplyForm = null;
 
   function setupCommentForm(formContainer) {
     const input = formContainer.querySelector("textarea");
     const actionsDiv = formContainer.querySelector(".comment-form-actions");
-    if (!actionsDiv) return; // Seguridad si no existe
+    if (!input || !actionsDiv) return;
 
     const submitBtn = actionsDiv.querySelector("button:last-child");
     const cancelBtn = actionsDiv.querySelector("button:first-child");
 
-    if (!input || !submitBtn || !cancelBtn) return;
-
-    // Estado inicial
     if (!formContainer.classList.contains("reply-active")) {
       actionsDiv.style.display = "none";
     } else {
       actionsDiv.style.display = "flex";
     }
 
-    // Auto-resize
     const autoResize = () => {
       input.style.height = "auto";
       input.style.height = input.scrollHeight + "px";
     };
     input.addEventListener("input", autoResize);
 
-    // Foco
     if (!formContainer.classList.contains("reply-active")) {
       input.addEventListener(
         "focus",
@@ -126,13 +140,11 @@ document.addEventListener("DOMContentLoaded", function () {
       );
     }
 
-    // Habilitar botón
     input.addEventListener("input", () => {
       if (input.value.trim().length > 0) submitBtn.removeAttribute("disabled");
       else submitBtn.setAttribute("disabled", "true");
     });
 
-    // Cancelar
     if (cancelBtn) {
       cancelBtn.addEventListener("click", (e) => {
         e.preventDefault();
@@ -150,7 +162,6 @@ document.addEventListener("DOMContentLoaded", function () {
       });
     }
 
-    // Enviar
     if (submitBtn) {
       submitBtn.addEventListener("click", (e) => {
         e.preventDefault();
@@ -209,36 +220,30 @@ document.addEventListener("DOMContentLoaded", function () {
   );
   if (mainFormContainer) setupCommentForm(mainFormContainer);
 
-  // Delegación para Botones "Responder" y "Likes de Comentarios"
+  // Delegación Comentarios
   if (commentsList) {
     commentsList.addEventListener("click", (e) => {
-      // A. Responder
       const replyBtn = e.target.closest(".btn-reply-text");
       if (replyBtn) {
-        const parentId = replyBtn.getAttribute("data-parent-id");
-        openReplyForm(parentId);
+        openReplyForm(replyBtn.getAttribute("data-parent-id"));
         return;
       }
-
-      // B. Likes/Dislikes en Comentarios
       const likeBtn = e.target.closest(".like-comment-btn");
-      const dislikeBtn = e.target.closest(".dislike-comment-btn");
-
       if (likeBtn) {
         handleCommentRate(likeBtn, "like");
         return;
       }
+
+      const dislikeBtn = e.target.closest(".dislike-comment-btn");
       if (dislikeBtn) {
         handleCommentRate(dislikeBtn, "dislike");
         return;
       }
 
-      // C. MENÚ DE OPCIONES (3 PUNTOS)
       const menuBtn = e.target.closest(".btn-comment-menu");
       if (menuBtn) {
         e.stopPropagation();
         const wrapper = menuBtn.closest(".comment-menu-wrapper");
-        // Cerrar otros menús abiertos
         document
           .querySelectorAll(".comment-menu-wrapper.active")
           .forEach((el) => {
@@ -248,28 +253,19 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
       }
 
-      // D. OPCIÓN EDITAR
       const editBtn = e.target.closest(".btn-edit-comment");
       if (editBtn) {
         const id = editBtn.getAttribute("data-id");
-        editBtn.closest(".comment-menu-wrapper").classList.remove("active"); // Cerrar menú
+        editBtn.closest(".comment-menu-wrapper").classList.remove("active");
         startEditingComment(id);
         return;
       }
 
-      // E. OPCIÓN ELIMINAR
       const deleteBtn = e.target.closest(".btn-delete-comment");
       if (deleteBtn) {
         const id = deleteBtn.getAttribute("data-id");
-        deleteBtn.closest(".comment-menu-wrapper").classList.remove("active"); // Cerrar menú
-
-        if (
-          confirm(
-            "¿Seguro que quieres eliminar este comentario de forma permanente?"
-          )
-        ) {
-          deleteComment(id);
-        }
+        deleteBtn.closest(".comment-menu-wrapper").classList.remove("active");
+        if (confirm("¿Eliminar comentario?")) deleteComment(id);
         return;
       }
     });
@@ -277,37 +273,28 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function openReplyForm(parentId) {
     if (activeReplyForm) activeReplyForm.remove();
-
     const container = document.getElementById("reply-form-" + parentId);
     if (!container) return;
 
-    const formHTML = `
+    container.innerHTML = `
             <div class="input-field-comment reply-active" data-parent-id="${parentId}" style="margin-top: 16px;">
                 <textarea class="materialize-textarea" placeholder="Añade una respuesta..."></textarea>
                 <div class="comment-form-actions" style="display: flex;">
                     <button class="btn-flat waves-effect">Cancelar</button>
                     <button class="btn-flat waves-effect" disabled>Responder</button>
                 </div>
-            </div>
-        `;
-
-    container.innerHTML = formHTML;
-
+            </div>`;
     const newForm = container.querySelector(".input-field-comment");
     setupCommentForm(newForm);
     activeReplyForm = newForm;
-    const textarea = newForm.querySelector("textarea");
-    if (textarea) textarea.focus();
+    newForm.querySelector("textarea").focus();
   }
 
   function insertReply(comment, parentId) {
     const parentComment = document.getElementById("comment-" + parentId);
     if (!parentComment) return;
-
     let currentMargin = parseInt(parentComment.style.marginLeft || 0);
-    let newMargin = currentMargin + 48;
-    if (newMargin > 96) newMargin = 96; // Limitar sangría visual (ej. 2 niveles)
-
+    let newMargin = Math.min(currentMargin + 48, 96);
     const html = createCommentHTML(comment, newMargin);
     parentComment.insertAdjacentHTML("afterend", html);
   }
@@ -323,16 +310,10 @@ document.addEventListener("DOMContentLoaded", function () {
                             <span class="comment-time">${c.date}</span>
                         </div>
                          <div class="comment-menu-wrapper">
-                            <button class="btn-icon-comment btn-comment-menu">
-                                <i class="material-icons">more_vert</i>
-                            </button>
+                            <button class="btn-icon-comment btn-comment-menu"><i class="material-icons">more_vert</i></button>
                             <div class="comment-dropdown-menu">
-                                <div class="menu-option btn-edit-comment" data-id="${c.id}">
-                                    <i class="material-icons">edit</i> Editar
-                                </div>
-                                <div class="menu-option btn-delete-comment" data-id="${c.id}">
-                                    <i class="material-icons">delete</i> Eliminar
-                                </div>
+                                <div class="menu-option btn-edit-comment" data-id="${c.id}"><i class="material-icons">edit</i> Editar</div>
+                                <div class="menu-option btn-delete-comment" data-id="${c.id}"><i class="material-icons">delete</i> Eliminar</div>
                             </div>
                         </div>
                     </div>
@@ -344,8 +325,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     </div>
                     <div class="reply-form-container" id="reply-form-${c.id}"></div>
                 </div>
-            </div>
-        `;
+            </div>`;
   }
 
   function prependComment(c) {
@@ -354,10 +334,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const emptyMsg = commentsList.querySelector("p.center-align");
     if (emptyMsg) emptyMsg.remove();
     commentsList.insertAdjacentHTML("afterbegin", html);
-    updateCount();
-  }
-
-  function updateCount() {
     const t = document.querySelector(".comments-count-title");
     if (t) {
       const n = parseInt(t.textContent.replace(/[^0-9]/g, "")) || 0;
@@ -365,14 +341,9 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  // =================================================
-  // 2. LÓGICA DE LIKES EN COMENTARIOS
-  // =================================================
-
   function handleCommentRate(btn, type) {
     const commentId = btn.getAttribute("data-comment-id");
     if (!commentId) return;
-
     const parentToolbar = btn.closest(".comment-actions-toolbar");
     const likeButton = parentToolbar.querySelector(".like-comment-btn");
     const dislikeButton = parentToolbar.querySelector(".dislike-comment-btn");
@@ -380,7 +351,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const likeIcon = likeButton.querySelector("i");
     const dislikeIcon = dislikeButton.querySelector("i");
 
-    // Optimistic UI
     if (type === "like") {
       const wasActive = likeButton.classList.contains("active-comment-rate");
       if (wasActive) {
@@ -393,12 +363,10 @@ document.addEventListener("DOMContentLoaded", function () {
         likeIcon.textContent = "thumb_up";
         dislikeButton.classList.remove("active-comment-rate");
         dislikeIcon.textContent = "thumb_down_alt";
-
         let current = parseInt(countSpan.textContent) || 0;
         countSpan.textContent = current + 1;
       }
     } else {
-      // Dislike
       const wasActive = dislikeButton.classList.contains("active-comment-rate");
       if (wasActive) {
         dislikeButton.classList.remove("active-comment-rate");
@@ -406,7 +374,6 @@ document.addEventListener("DOMContentLoaded", function () {
       } else {
         dislikeButton.classList.add("active-comment-rate");
         dislikeIcon.textContent = "thumb_down";
-
         if (likeButton.classList.contains("active-comment-rate")) {
           likeButton.classList.remove("active-comment-rate");
           likeIcon.textContent = "thumb_up_alt";
@@ -416,68 +383,37 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     }
 
-    // Petición AJAX al servidor
     fetch("actions/rate_comment.php", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ comment_id: commentId, type: type }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.success) {
-          // Confirmar contador real del servidor
-          countSpan.textContent = data.likes > 0 ? data.likes : "";
-        } else if (data.error === "auth_required") {
-          showMessage("Inicia sesión para valorar");
-          // Revertir UI si falla
-          likeButton.classList.remove("active-comment-rate");
-          dislikeButton.classList.remove("active-comment-rate");
-          likeIcon.textContent = "thumb_up_alt";
-          dislikeIcon.textContent = "thumb_down_alt";
-        }
-      })
-      .catch((err) => console.error(err));
+    }).catch((err) => console.error(err));
   }
 
-  // --- FUNCIÓN BORRAR ---
   function deleteComment(id) {
     fetch("actions/manage_comment.php", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ action: "delete", comment_id: id }),
     })
-      .then((res) => res.json())
+      .then((r) => r.json())
       .then((data) => {
         if (data.success) {
           const item = document.getElementById("comment-" + id);
           if (item) {
             item.style.opacity = "0";
             setTimeout(() => item.remove(), 300);
-
-            const countTitle = document.querySelector(".comments-count-title");
-            if (countTitle) {
-              const currentNum =
-                parseInt(countTitle.textContent.replace(/[^0-9]/g, "")) || 0;
-              countTitle.textContent =
-                new Intl.NumberFormat().format(Math.max(0, currentNum - 1)) +
-                " comentarios";
-            }
             showMessage("Comentario eliminado");
           }
-        } else {
-          showMessage("Error: " + data.error);
         }
       });
   }
 
-  // --- FUNCIÓN EDITAR ---
   function startEditingComment(id) {
     const contentDiv = document.getElementById("comment-content-" + id);
     if (!contentDiv) return;
     const oldText = contentDiv.innerText;
-
     const editContainer = document.createElement("div");
-    editContainer.className = "edit-form-container";
     editContainer.innerHTML = `
             <div class="input-field-comment" style="margin-top: 8px;">
                 <textarea class="materialize-textarea" style="min-height: 60px;">${oldText}</textarea>
@@ -486,76 +422,52 @@ document.addEventListener("DOMContentLoaded", function () {
                     <button class="btn-flat waves-effect btn-save-edit" style="background-color: #065fd4; color: white;">Guardar</button>
                 </div>
             </div>`;
-
     contentDiv.style.display = "none";
     contentDiv.parentNode.insertBefore(editContainer, contentDiv.nextSibling);
 
     const textarea = editContainer.querySelector("textarea");
-    textarea.style.height = "auto";
-    textarea.style.height = textarea.scrollHeight + "px";
     textarea.focus();
 
-    const cancelBtn = editContainer.querySelector(".btn-cancel-edit");
-    const saveBtn = editContainer.querySelector(".btn-save-edit");
-
-    cancelBtn.addEventListener("click", () => {
-      editContainer.remove();
-      contentDiv.style.display = "block";
-    });
-
-    saveBtn.addEventListener("click", () => {
-      const newText = textarea.value.trim();
-      if (!newText) return;
-
-      saveBtn.disabled = true;
-      fetch("actions/manage_comment.php", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          action: "edit",
-          comment_id: id,
-          content: newText,
-        }),
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.success) {
-            contentDiv.innerHTML = data.content;
-            editContainer.remove();
-            contentDiv.style.display = "block";
-            showMessage("Comentario editado");
-          } else {
-            showMessage("Error al editar");
-            saveBtn.disabled = false;
-          }
-        });
-    });
+    editContainer
+      .querySelector(".btn-cancel-edit")
+      .addEventListener("click", () => {
+        editContainer.remove();
+        contentDiv.style.display = "block";
+      });
+    editContainer
+      .querySelector(".btn-save-edit")
+      .addEventListener("click", () => {
+        const newText = textarea.value.trim();
+        if (!newText) return;
+        fetch("actions/manage_comment.php", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            action: "edit",
+            comment_id: id,
+            content: newText,
+          }),
+        })
+          .then((r) => r.json())
+          .then((d) => {
+            if (d.success) {
+              contentDiv.innerHTML = d.content;
+              editContainer.remove();
+              contentDiv.style.display = "block";
+              showMessage("Editado");
+            }
+          });
+      });
   }
 
   // =================================================
-  // 3. LÓGICA COMPARTIR (NUEVA Y CRÍTICA)
+  // 3. LÓGICA COMPARTIR
   // =================================================
-
-  // Aquí vinculamos el botón de compartir con la apertura del modal
   if (shareBtn && modalShareInstance) {
     shareBtn.addEventListener("click", function (e) {
       e.preventDefault();
-      console.log("Click en Compartir");
-      // Actualizar enlaces antes de abrir
       updateShareLinks(originalUrl);
       modalShareInstance.open();
-    });
-  } else if (shareBtn) {
-    // Fallback si el modal no se inicializó
-    shareBtn.addEventListener("click", (e) => {
-      e.preventDefault();
-      if (navigator.share) {
-        navigator
-          .share({ title: document.title, url: originalUrl })
-          .catch(console.error);
-      } else {
-        prompt("Copia este enlace:", originalUrl);
-      }
     });
   }
 
@@ -564,27 +476,23 @@ document.addEventListener("DOMContentLoaded", function () {
       shareUrlInput.select();
       navigator.clipboard
         .writeText(shareUrlInput.value)
-        .then(() => showMessage("Enlace copiado"));
+        .then(() => showMessage("Copiado"));
     });
   }
 
   if (startAtCheckbox && shareUrlInput) {
     startAtCheckbox.addEventListener("change", function () {
-      if (this.checked) {
-        const separator = originalUrl.includes("?") ? "&" : "?";
-        shareUrlInput.value = originalUrl + separator + "t=0s";
-        updateShareLinks(shareUrlInput.value);
-      } else {
-        shareUrlInput.value = originalUrl;
-        updateShareLinks(originalUrl);
-      }
+      const separator = originalUrl.includes("?") ? "&" : "?";
+      shareUrlInput.value = this.checked
+        ? originalUrl + separator + "t=0s"
+        : originalUrl;
+      updateShareLinks(shareUrlInput.value);
     });
   }
 
   // =================================================
-  // 4. LÓGICA DE SUSCRIPCIÓN Y LIKES DE VIDEO
+  // 4. LÓGICA SUSCRIPCIÓN Y LIKES VIDEO
   // =================================================
-
   if (subscribeBtn) {
     subscribeBtn.addEventListener("click", (e) => {
       e.preventDefault();
@@ -603,24 +511,18 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
   function performSubscriptionAction() {
-    const channelId = subscribeBtn.getAttribute("data-channel-id");
-    subscribeBtn.disabled = true;
+    const cid = subscribeBtn.getAttribute("data-channel-id");
     fetch("actions/subscribe.php", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ channel_id: channelId }),
+      body: JSON.stringify({ channel_id: cid }),
     })
-      .then((r) => r.text())
-      .then((text) => {
-        subscribeBtn.disabled = false;
-        try {
-          const data = JSON.parse(text);
-          if (data.success) updateSubscribeButton(data.status, data.count);
-        } catch (e) {}
+      .then((r) => r.json())
+      .then((d) => {
+        if (d.success) updateSubscribeButton(d.status, d.count);
       });
   }
   function updateSubscribeButton(s, c) {
-    const sp = document.getElementById("subscribersCount");
     if (s === "subscribed") {
       subscribeBtn.classList.add("subscribed");
       subscribeBtn.textContent = "Suscrito";
@@ -628,21 +530,11 @@ document.addEventListener("DOMContentLoaded", function () {
       subscribeBtn.classList.remove("subscribed");
       subscribeBtn.textContent = "Suscribirse";
     }
-    if (sp) sp.textContent = c + " suscriptores";
+    if (document.getElementById("subscribersCount"))
+      document.getElementById("subscribersCount").textContent =
+        c + " suscriptores";
   }
 
-  // LIKES VIDEO PRINCIPAL
-  function updateIcons() {
-    if (!likeBtn) return;
-    const i1 = likeBtn.querySelector("i"),
-      i2 = dislikeBtn.querySelector("i");
-    i1.textContent = likeBtn.classList.contains("active")
-      ? "thumb_up"
-      : "thumb_up_alt";
-    i2.textContent = dislikeBtn.classList.contains("active")
-      ? "thumb_down"
-      : "thumb_down_alt";
-  }
   function handleRate(type) {
     if (type === "like") {
       const active = likeBtn.classList.contains("active");
@@ -666,42 +558,195 @@ document.addEventListener("DOMContentLoaded", function () {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ video_id: vid, type: type }),
     })
-      .then((r) => r.text())
-      .then((t) => {
-        try {
-          const d = JSON.parse(t);
-          if (d.success) updateRateUI(d.likes, d.dislikes, d.action, type);
-        } catch (e) {}
+      .then((r) => r.json())
+      .then((d) => {
+        if (d.success && likeCountSpan)
+          likeCountSpan.textContent = new Intl.NumberFormat().format(d.likes);
       });
   }
+
+  function updateIcons() {
+    if (!likeBtn) return;
+    likeBtn.querySelector("i").textContent = likeBtn.classList.contains(
+      "active"
+    )
+      ? "thumb_up"
+      : "thumb_up_alt";
+    dislikeBtn.querySelector("i").textContent = dislikeBtn.classList.contains(
+      "active"
+    )
+      ? "thumb_down"
+      : "thumb_down_alt";
+  }
+
   if (likeBtn) likeBtn.addEventListener("click", () => handleRate("like"));
   if (dislikeBtn)
     dislikeBtn.addEventListener("click", () => handleRate("dislike"));
-  function updateRateUI(l, d, a, t) {
-    if (likeCountSpan)
-      likeCountSpan.textContent = new Intl.NumberFormat().format(l);
-    if (a === "removed") {
-      likeBtn.classList.remove("active");
-      dislikeBtn.classList.remove("active");
-    } else if (t === "like") {
-      likeBtn.classList.add("active");
-      dislikeBtn.classList.remove("active");
-    } else {
-      dislikeBtn.classList.add("active");
-      likeBtn.classList.remove("active");
-    }
-    updateIcons();
-  }
   updateIcons();
 
-  // Cerrar menús al hacer clic fuera (para comentarios)
   document.addEventListener("click", function (e) {
     if (!e.target.closest(".comment-menu-wrapper")) {
       document
         .querySelectorAll(".comment-menu-wrapper.active")
-        .forEach((el) => {
-          el.classList.remove("active");
-        });
+        .forEach((el) => el.classList.remove("active"));
     }
   });
+
+  // =================================================
+  // 5. LÓGICA DE GUARDAR EN LISTA (PLAYLISTS)
+  // =================================================
+
+  if (saveBtn && modalSaveInstance) {
+    saveBtn.addEventListener("click", function (e) {
+      e.preventDefault();
+      createView.style.display = "none";
+      playlistsList.style.display = "block";
+      saveFooter.style.display = "block";
+
+      modalSaveInstance.open();
+      loadPlaylists();
+    });
+  }
+
+  function loadPlaylists() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const videoId = urlParams.get("id");
+    playlistsList.innerHTML =
+      '<div class="center-align" style="padding: 20px;"><div class="preloader-wrapper small active"><div class="spinner-layer spinner-blue-only"><div class="circle-clipper left"><div class="circle"></div></div><div class="gap-patch"><div class="circle"></div></div><div class="circle-clipper right"><div class="circle"></div></div></div></div></div>';
+
+    fetch("actions/playlist.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "get_playlists", video_id: videoId }),
+    })
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.success) {
+          renderPlaylists(data.playlists);
+        } else if (data.error === "auth_required") {
+          modalSaveInstance.close();
+          showMessage("Inicia sesión para guardar");
+          setTimeout(() => (window.location.href = "login.php"), 1500);
+        }
+      });
+  }
+
+  function renderPlaylists(playlists) {
+    if (playlists.length === 0) {
+      playlistsList.innerHTML =
+        '<p style="color:#666; text-align:center; padding:10px;">No tienes listas</p>';
+    } else {
+      playlistsList.innerHTML = "";
+      playlists.forEach((pl) => {
+        const div = document.createElement("div");
+        div.className = "playlist-item";
+        div.innerHTML = `
+                    <label>
+                        <input type="checkbox" class="filled-in" data-id="${
+                          pl.id
+                        }" ${pl.contains_video ? "checked" : ""} />
+                        <span>${pl.title} ${
+          pl.is_private
+            ? '<i class="material-icons tiny grey-text">lock</i>'
+            : ""
+        }</span>
+                    </label>
+                `;
+
+        const checkbox = div.querySelector("input");
+        checkbox.addEventListener("change", function () {
+          toggleVideoInPlaylist(this.dataset.id, this.checked);
+        });
+
+        playlistsList.appendChild(div);
+      });
+    }
+  }
+
+  function toggleVideoInPlaylist(playlistId, isAdding) {
+    const urlParams = new URLSearchParams(window.location.search);
+    const videoId = urlParams.get("id");
+
+    fetch("actions/playlist.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        action: "toggle_video",
+        playlist_id: playlistId,
+        video_id: videoId,
+        add: isAdding,
+      }),
+    })
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.success) {
+          showMessage(
+            isAdding ? "Guardado en la lista" : "Eliminado de la lista"
+          );
+        } else {
+          showMessage("Error al actualizar");
+        }
+      });
+  }
+
+  if (showCreateBtn) {
+    showCreateBtn.addEventListener("click", () => {
+      playlistsList.style.display = "none";
+      saveFooter.style.display = "none";
+      createView.style.display = "block";
+      newPlaylistInput.focus();
+    });
+  }
+
+  if (cancelCreateBtn) {
+    cancelCreateBtn.addEventListener("click", () => {
+      createView.style.display = "none";
+      playlistsList.style.display = "block";
+      saveFooter.style.display = "block";
+      newPlaylistInput.value = "";
+    });
+  }
+
+  if (newPlaylistInput) {
+    newPlaylistInput.addEventListener("input", function () {
+      if (this.value.trim().length > 0)
+        confirmCreateBtn.removeAttribute("disabled");
+      else confirmCreateBtn.setAttribute("disabled", "true");
+    });
+  }
+
+  if (confirmCreateBtn) {
+    confirmCreateBtn.addEventListener("click", () => {
+      const title = newPlaylistInput.value.trim();
+      const urlParams = new URLSearchParams(window.location.search);
+      const videoId = urlParams.get("id");
+
+      if (!title) return;
+      confirmCreateBtn.disabled = true;
+
+      fetch("actions/playlist.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "create",
+          title: title,
+          video_id: videoId,
+        }),
+      })
+        .then((r) => r.json())
+        .then((data) => {
+          confirmCreateBtn.disabled = false;
+          if (data.success) {
+            newPlaylistInput.value = "";
+            createView.style.display = "none";
+            playlistsList.style.display = "block";
+            saveFooter.style.display = "block";
+            showMessage("Lista creada y guardada");
+            loadPlaylists();
+          } else {
+            showMessage("Error al crear lista");
+          }
+        });
+    });
+  }
 });

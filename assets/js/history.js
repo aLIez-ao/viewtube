@@ -1,15 +1,13 @@
 document.addEventListener("DOMContentLoaded", function () {
   console.log("HISTORY.JS: Cargado");
 
-  // Elementos
   const btnClear = document.getElementById("btnClearHistory");
   const btnPause = document.getElementById("btnPauseHistory");
-
-  // Elementos internos del botón pausar
   const btnPauseText = btnPause ? btnPause.querySelector("span") : null;
   const btnPauseIcon = btnPause ? btnPause.querySelector("i") : null;
+  const historyListContainer = document.querySelector(".history-list"); // Selector seguro por clase
 
-  // --- 1. OBTENER ESTADO INICIAL (Al cargar la página) ---
+  // --- 1. OBTENER ESTADO INICIAL ---
   if (btnPause) {
     fetch("actions/manage_history.php", {
       method: "POST",
@@ -19,17 +17,12 @@ document.addEventListener("DOMContentLoaded", function () {
       .then((res) => res.json())
       .then((data) => {
         if (data.success) {
-          console.log(
-            "Estado inicial historial:",
-            data.paused ? "Pausado" : "Activo"
-          );
           updatePauseButton(data.paused);
         }
-      })
-      .catch((err) => console.error("Error obteniendo estado:", err));
+      });
   }
 
-  // --- 2. ACCIÓN: BORRAR TODO ---
+  // --- 2. ACCIONES GLOBALES ---
   if (btnClear) {
     btnClear.addEventListener("click", function () {
       if (confirm("¿Estás seguro de que quieres borrar todo tu historial?")) {
@@ -51,12 +44,9 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  // --- 3. ACCIÓN: PAUSAR / REANUDAR ---
   if (btnPause) {
     btnPause.addEventListener("click", function () {
-      // Deshabilitar temporalmente para evitar doble clic
       btnPause.disabled = true;
-
       fetch("actions/manage_history.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -65,33 +55,116 @@ document.addEventListener("DOMContentLoaded", function () {
         .then((res) => res.json())
         .then((data) => {
           btnPause.disabled = false;
-
           if (data.success) {
-            console.log("Nuevo estado:", data.paused);
             updatePauseButton(data.paused);
             M.toast({ html: data.message });
-          } else {
-            M.toast({ html: "Error al cambiar estado" });
-            console.error(data.error);
           }
         })
-        .catch((err) => {
-          btnPause.disabled = false;
-          console.error("Error AJAX:", err);
-        });
+        .catch((err) => (btnPause.disabled = false));
     });
   }
 
-  // Función auxiliar visual
+  // --- 3. MENÚ DE ELEMENTOS INDIVIDUALES (DELEGACIÓN) ---
+  if (historyListContainer) {
+    console.log("HISTORY.JS: Lista encontrada, activando delegación.");
+
+    historyListContainer.addEventListener("click", function (e) {
+      // A. BOTÓN DE MENÚ (3 Puntos)
+      const menuBtn = e.target.closest(".btn-history-menu");
+      if (menuBtn) {
+        e.preventDefault(); // Evitar navegar al video
+        e.stopPropagation();
+
+        const wrapper = menuBtn.closest(".history-menu-wrapper");
+
+        // Cerrar otros menús
+        document
+          .querySelectorAll(".history-menu-wrapper.active")
+          .forEach((el) => {
+            if (el !== wrapper) el.classList.remove("active");
+          });
+
+        wrapper.classList.toggle("active");
+        return;
+      }
+
+      // B. BOTÓN ELIMINAR ITEM (Dentro del menú)
+      const removeBtn = e.target.closest(".btn-remove-item");
+      if (removeBtn) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const videoId = removeBtn.getAttribute("data-video-id");
+        const menuWrapper = removeBtn.closest(".history-menu-wrapper");
+        menuWrapper.classList.remove("active"); // Cerrar menú
+
+        removeItem(videoId);
+        return; // Importante para no cerrar inmediatamente por clic fuera
+      }
+
+      // C. OTROS BOTONES (Placeholders)
+      if (
+        e.target.closest(".menu-option") &&
+        !e.target.closest(".btn-remove-item")
+      ) {
+        // Cerrar menú al hacer clic en cualquier opción que no sea eliminar
+        const menuWrapper = e.target.closest(".history-menu-wrapper");
+        if (menuWrapper) menuWrapper.classList.remove("active");
+      }
+    });
+  }
+
+  // CERRAR MENÚS AL CLIC FUERA
+  document.addEventListener("click", function (e) {
+    if (!e.target.closest(".history-menu-wrapper")) {
+      document
+        .querySelectorAll(".history-menu-wrapper.active")
+        .forEach((el) => {
+          el.classList.remove("active");
+        });
+    }
+  });
+
+  // Función para borrar un item
+  function removeItem(videoId) {
+    fetch("actions/manage_history.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "remove_item", video_id: videoId }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success) {
+          const item = document.getElementById("history-item-" + videoId);
+          if (item) {
+            // Animación de salida
+            item.style.transition = "opacity 0.3s, transform 0.3s";
+            item.style.opacity = "0";
+            item.style.transform = "translateX(20px)";
+
+            setTimeout(() => {
+              item.remove();
+              // Comprobar si quedó vacía la lista
+              if (!document.querySelector(".history-item")) {
+                location.reload(); // O mostrar mensaje de vacío dinámicamente
+              }
+            }, 300);
+
+            M.toast({ html: "Se ha quitado del historial" });
+          }
+        } else {
+          M.toast({ html: "Error al quitar elemento" });
+        }
+      })
+      .catch((err) => console.error(err));
+  }
+
   function updatePauseButton(isPaused) {
     if (!btnPauseText || !btnPauseIcon) return;
-
     if (isPaused) {
-      // Si está pausado, el botón debe ofrecer "Activar"
       btnPauseText.textContent = "Activar el historial de reproducciones";
       btnPauseIcon.textContent = "play_circle_outline";
     } else {
-      // Si está activo, el botón debe ofrecer "Pausar"
       btnPauseText.textContent = "Pausar el historial de reproducciones";
       btnPauseIcon.textContent = "pause_circle_outline";
     }

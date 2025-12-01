@@ -85,17 +85,17 @@
 
     <!-- EXPLORAR -->
     <li><span class="sidebar-title">Explorar</span></li>
-    <li><a href="#!" class="waves-effect"><i class="material-icons">music_note</i><span>Música</span></a></li>
-    <li><a href="#!" class="waves-effect"><i class="material-icons">movie</i><span>Películas</span></a></li>
-    <li><a href="#!" class="waves-effect"><i class="material-icons">live_tv</i><span>En vivo</span></a></li>
-    <li><a href="#!" class="waves-effect"><i class="material-icons">sports_esports</i><span>Videojuegos</span></a></li>
+    <li><a href="<?php echo BASE_URL; ?>construccion.php" class="waves-effect"><i class="material-icons">music_note</i><span>Música</span></a></li>
+    <li><a href="<?php echo BASE_URL; ?>construccion.php" class="waves-effect"><i class="material-icons">movie</i><span>Películas</span></a></li>
+    <li><a href="<?php echo BASE_URL; ?>construccion.php" class="waves-effect"><i class="material-icons">live_tv</i><span>En vivo</span></a></li>
+    <li><a href="<?php echo BASE_URL; ?>construccion.php" class="waves-effect"><i class="material-icons">sports_esports</i><span>Videojuegos</span></a></li>
 
     <li>
         <div class="divider"></div>
     </li>
 
-    <li><a href="#!" class="waves-effect"><i class="material-icons">settings</i><span>Configuración</span></a></li>
-    <li><a href="#!" class="waves-effect"><i class="material-icons">help</i><span>Ayuda</span></a></li>
+    <li><a href="<?php echo BASE_URL; ?>construccion.php" class="waves-effect"><i class="material-icons">settings</i><span>Configuración</span></a></li>
+    <li><a href="<?php echo BASE_URL; ?>construccion.php" class="waves-effect"><i class="material-icons">help</i><span>Ayuda</span></a></li>
 
     <li style="height: 50px;"></li>
 </ul>

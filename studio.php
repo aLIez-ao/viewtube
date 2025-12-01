@@ -97,7 +97,6 @@ $user_avatar = $user['avatar'] === 'default.png'
         <!-- Header de Studio -->
         <header class="studio-header">
             <div class="header-left">
-                <i class="material-icons menu-icon">menu</i>
                 <div class="studio-brand">
                     <img src="<?php echo BASE_URL; ?>assets/img/favicon.svg" alt="Logo">
                     <span>Studio</span>
@@ -134,13 +133,14 @@ $user_avatar = $user['avatar'] === 'default.png'
                 </div>
                 
                 <nav class="studio-nav">
-                    <a href="#" class="active"><i class="material-icons">dashboard</i> Panel de control</a>
-                    <a href="#"><i class="material-icons">video_library</i> Contenido</a>
-                    <a href="#"><i class="material-icons">analytics</i> Estadísticas</a>
-                    <a href="#"><i class="material-icons">comment</i> Comentarios</a>
-                    <a href="#"><i class="material-icons">subtitles</i> Subtítulos</a>
-                    <a href="#"><i class="material-icons">monetization_on</i> Ingresos</a>
-                    <a href="#"><i class="material-icons">settings</i> Configuración</a>
+                    <a href="<?php echo BASE_URL; ?>index.php" class="active"><i class="material-icons">home</i>ViewTube</a>
+                    <a href="<?php echo BASE_URL; ?>construccion.php" class="active"><i class="material-icons">dashboard</i> Panel de control</a>
+                    <a href="<?php echo BASE_URL; ?>construccion.php"><i class="material-icons">video_library</i> Contenido</a>
+                    <a href="<?php echo BASE_URL; ?>construccion.php"><i class="material-icons">analytics</i> Estadísticas</a>
+                    <a href="<?php echo BASE_URL; ?>construccion.php"><i class="material-icons">comment</i> Comentarios</a>
+                    <a href="<?php echo BASE_URL; ?>construccion.php"><i class="material-icons">subtitles</i> Subtítulos</a>
+                    <a href="<?php echo BASE_URL; ?>construccion.php"><i class="material-icons">monetization_on</i> Ingresos</a>
+                    <a href="<?php echo BASE_URL; ?>construccion.php"><i class="material-icons">settings</i> Configuración</a>
                 </nav>
             </aside>
 

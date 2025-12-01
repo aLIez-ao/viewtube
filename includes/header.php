@@ -67,7 +67,7 @@ $bodyClass = ($page_layout === 'watch') ? 'layout-watch' : 'layout-guide';
             <!-- DERECHA -->
             <div class="nav-right">
                 
-                <a href="#" class="icon-btn tooltipped hide-on-small-only" data-position="bottom" data-tooltip="Crear">
+                <a href="<?php echo BASE_URL; ?>studio.php" class="icon-btn tooltipped hide-on-small-only" data-position="bottom" data-tooltip="Crear">
                     <i class="material-icons">video_call</i>
                 </a>
                 <a href="#" class="icon-btn tooltipped hide-on-small-only" data-position="bottom" data-tooltip="Notificaciones">

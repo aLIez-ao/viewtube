@@ -5,12 +5,46 @@
    2. Cambia los valores por tus credenciales reales
 */
 
-define('DB_HOST', 'localhost');
-define('DB_USER', 'tu_usuario_aqui');
-define('DB_PASS', 'tu_password_aqui');
-define('DB_NAME', 'nombre_base_datos');
+// ========== INICIAR SESIÓN ==================================
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
-// Rutas del sistema
-define('ROOT_PATH', realpath(dirname(__FILE__) . '/../'));
-define('BASE_URL', 'http://localhost/proyecto-final-web/');
-?>
+// ========== CONFIGURACIÓN DE BASE DE DATOS ==================
+
+// MODO LOCAL (XAMPP)
+// $DB_HOST = 'localhost';
+// DB_USER = 'root';
+// $DB_PASS = '';
+// $DB_NAME = '';
+
+// MODO PRODUCCIÓN (InfinityFree)
+$DB_HOST = '';
+$DB_USER = '';
+$DB_PASS = '';
+$DB_NAME = '';
+
+// ========== CONEXIÓN A LA BASE DE DATOS ====================
+$conn = new mysqli($DB_HOST, $DB_USER, $DB_PASS, $DB_NAME);
+
+// Verificar conexión
+if ($conn->connect_error) {
+    die("Error de conexión: " . $conn->connect_error);
+}
+
+// Establecer codificación
+$conn->set_charset("utf8");
+
+// ========== CONSTANTES DE RUTAS ============================
+
+// MODO LOCAL (XAMPP) 
+// ('BASE_URL', 'http://localhost/proyecto-final-web/');
+
+// MODO PRODUCCIÓN (InfinityFree) 
+define('BASE_URL', 'URL');
+
+// Ruta física del proyecto (útil para subir archivos)
+define('ROOT_PATH', dirname(__DIR__) . '/');
+
+// ========== CONFIGURACIÓN GLOBAL ============================
+$APP_NAME = "WEB SITE";

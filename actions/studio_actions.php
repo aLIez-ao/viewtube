@@ -1,5 +1,4 @@
 <?php
-// actions/studio_actions.php
 require_once '../config/db.php';
 
 header('Content-Type: application/json');
@@ -13,7 +12,7 @@ $user_id = $_SESSION['user_id'];
 $data = json_decode(file_get_contents('php://input'), true);
 $action = $data['action'] ?? '';
 
-// CREAR CANAL
+// Crear canal
 if ($action === 'create_channel') {
     $name = trim($data['name'] ?? '');
     

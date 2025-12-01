@@ -1,5 +1,4 @@
 <?php
-// watch.php
 require_once 'config/db.php';
 require_once 'includes/functions.php';
 
@@ -13,9 +12,7 @@ $video_id = (int)$_GET['id'];
 $page_layout = 'watch'; // Define el layout para el header (sidebar flotante)
 $current_user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 0;
 
-// ======================================================
-// 0. LÓGICA DE HISTORIAL (Registrar visita)
-// ======================================================
+// LÓGICA DE HISTORIAL (Registrar visita)
 if ($current_user_id > 0) {
     // Verificar si el usuario tiene el historial pausado
     $u_check = $conn->query("SELECT history_paused FROM users WHERE id = $current_user_id");
@@ -32,7 +29,7 @@ if ($current_user_id > 0) {
     }
 }
 
-// 1. QUERY PRINCIPAL (Datos del Video + Canal + Usuario)
+// QUERY PRINCIPAL (Datos del Video + Canal + Usuario)
 $sql = "SELECT 
             v.*, 
             c.id AS channel_id, 
@@ -54,7 +51,7 @@ if ($result->num_rows == 0) {
 $video = $result->fetch_assoc();
 $APP_NAME = $video['title']; // Título de la pestaña
 
-// 2. QUERY ESTADOS DEL USUARIO (Suscripción y Like)
+// QUERY ESTADOS DEL USUARIO (Suscripción y Like)
 $is_subscribed = false;
 $user_rating = 'none';
 
@@ -68,10 +65,10 @@ if ($current_user_id > 0) {
     if ($row = $check_rate->fetch_assoc()) $user_rating = $row['type'];
 }
 
-// 3. CONTEO DE LIKES
+// CONTEO DE LIKES
 $likes_count = $conn->query("SELECT COUNT(*) as c FROM likes WHERE video_id = $video_id AND type = 'like'")->fetch_assoc()['c'];
 
-// 4. QUERY RELACIONADOS
+// QUERY RELACIONADOS
 // Importante: Incluir channel_id para los enlaces
 $sql_related = "SELECT 
                     v.*, 
@@ -83,7 +80,7 @@ $sql_related = "SELECT
                 ORDER BY RAND() LIMIT 10";
 $related_result = $conn->query($sql_related);
 
-// 5. QUERY COMENTARIOS (JERÁRQUICOS)
+// QUERY COMENTARIOS (JERÁRQUICOS)
 $sql_comments = "SELECT c.*, u.username, u.avatar 
                  FROM comments c 
                  JOIN users u ON c.user_id = u.id 

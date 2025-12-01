@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const btnPauseIcon = btnPause ? btnPause.querySelector("i") : null;
   const historyListContainer = document.querySelector(".history-list"); // Selector seguro por clase
 
-  // --- 1. OBTENER ESTADO INICIAL ---
+  // OBTENER ESTADO INICIAL
   if (btnPause) {
     fetch("actions/manage_history.php", {
       method: "POST",
@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", function () {
       });
   }
 
-  // --- 2. ACCIONES GLOBALES ---
+  // ACCIONES GLOBALES
   if (btnClear) {
     btnClear.addEventListener("click", function () {
       if (confirm("¿Estás seguro de que quieres borrar todo tu historial?")) {
@@ -64,15 +64,15 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  // --- 3. MENÚ DE ELEMENTOS INDIVIDUALES (DELEGACIÓN) ---
+  // MENÚ DE ELEMENTOS INDIVIDUALEs
   if (historyListContainer) {
     console.log("HISTORY.JS: Lista encontrada, activando delegación.");
 
     historyListContainer.addEventListener("click", function (e) {
-      // A. BOTÓN DE MENÚ (3 Puntos)
+      // BOTÓN DE MENÚ (3 Puntos)
       const menuBtn = e.target.closest(".btn-history-menu");
       if (menuBtn) {
-        e.preventDefault(); // Evitar navegar al video
+        e.preventDefault();
         e.stopPropagation();
 
         const wrapper = menuBtn.closest(".history-menu-wrapper");
@@ -88,7 +88,7 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
       }
 
-      // B. BOTÓN ELIMINAR ITEM (Dentro del menú)
+      // BOTÓN ELIMINAR ITEM (Dentro del menú)
       const removeBtn = e.target.closest(".btn-remove-item");
       if (removeBtn) {
         e.preventDefault();
@@ -99,15 +99,14 @@ document.addEventListener("DOMContentLoaded", function () {
         menuWrapper.classList.remove("active"); // Cerrar menú
 
         removeItem(videoId);
-        return; // Importante para no cerrar inmediatamente por clic fuera
+        return;
       }
 
-      // C. OTROS BOTONES (Placeholders)
+      // OTROS BOTONES
       if (
         e.target.closest(".menu-option") &&
         !e.target.closest(".btn-remove-item")
       ) {
-        // Cerrar menú al hacer clic en cualquier opción que no sea eliminar
         const menuWrapper = e.target.closest(".history-menu-wrapper");
         if (menuWrapper) menuWrapper.classList.remove("active");
       }

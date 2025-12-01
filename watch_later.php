@@ -1,9 +1,8 @@
 <?php
-// watch_later.php
 require_once 'config/db.php';
 require_once 'includes/functions.php';
 
-// 1. Verificar sesión
+// Verificar sesión
 if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
     exit();
@@ -13,8 +12,7 @@ $user_id = $_SESSION['user_id'];
 $page_layout = 'guide'; 
 $APP_NAME = "Ver más tarde";
 
-// 2. OBTENER ID DE LA LISTA "Ver más tarde"
-// Buscamos la playlist por nombre exacto para este usuario
+// OBTENER ID DE LA LISTA "Ver más tarde"
 $playlist_query = "SELECT id, title, created_at FROM playlists WHERE user_id = ? AND title = 'Ver más tarde' LIMIT 1";
 $stmt_p = $conn->prepare($playlist_query);
 $stmt_p->bind_param("i", $user_id);
@@ -25,7 +23,7 @@ $playlist = $res_p->fetch_assoc();
 $playlist_id = $playlist ? $playlist['id'] : 0;
 $result = null;
 
-// 3. SI EXISTE LA LISTA, OBTENER VIDEOS
+// SI EXISTE LA LISTA, OBTENER VIDEOS
 if ($playlist_id > 0) {
     $sql = "SELECT pv.id as item_id, pv.position,
                    v.id as video_id, v.title, v.description, v.thumbnail_url, v.views, v.duration, v.created_at as video_date,

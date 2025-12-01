@@ -1,5 +1,4 @@
 <?php
-// forgot_password.php
 require_once 'config/db.php';
 
 if (isset($_SESSION['user_id'])) {
@@ -12,6 +11,7 @@ if (isset($_SESSION['user_id'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="<?php echo BASE_URL; ?>assets/img/favicon.svg">
     <title>Recuperar cuenta - <?php echo $APP_NAME; ?></title>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/login.css">

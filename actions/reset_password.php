@@ -1,5 +1,4 @@
 <?php
-// reset_password.php
 require_once 'config/db.php';
 
 // Validar Token
@@ -32,6 +31,7 @@ if (empty($token)) {
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/login.css">
 </head>
+
 <body>
     <div class="login-card">
         <div class="login-header">
@@ -53,6 +53,7 @@ if (empty($token)) {
                 <div class="input-field">
                     <input type="password" name="password" placeholder="Nueva contraseña" required>
                 </div>
+                
                 <div class="input-field">
                     <input type="password" name="confirm_password" placeholder="Confirmar nueva contraseña" required>
                 </div>

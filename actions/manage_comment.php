@@ -1,5 +1,4 @@
 <?php
-// actions/manage_comment.php
 require_once '../config/db.php';
 
 header('Content-Type: application/json');
@@ -11,7 +10,7 @@ if (!isset($_SESSION['user_id'])) {
 
 $user_id = $_SESSION['user_id'];
 $data = json_decode(file_get_contents('php://input'), true);
-$action = isset($data['action']) ? $data['action'] : ''; // 'edit' o 'delete'
+$action = isset($data['action']) ? $data['action'] : '';
 $comment_id = isset($data['comment_id']) ? (int)$data['comment_id'] : 0;
 
 if ($comment_id <= 0 || !in_array($action, ['edit', 'delete'])) {
@@ -19,7 +18,7 @@ if ($comment_id <= 0 || !in_array($action, ['edit', 'delete'])) {
     exit();
 }
 
-// 1. Verificar propiedad del comentario
+// Verificar propiedad del comentario
 $check = $conn->prepare("SELECT id, user_id FROM comments WHERE id = ?");
 $check->bind_param("i", $comment_id);
 $check->execute();
@@ -36,10 +35,8 @@ if ($comment['user_id'] != $user_id) {
     exit();
 }
 
-// 2. Ejecutar acción
+// Ejecutar acción
 if ($action === 'delete') {
-    // Eliminar (ON DELETE CASCADE en la BD debería borrar likes y respuestas, 
-    // pero si no, deberíamos borrarlas manualmente. Asumimos integridad referencial).
     $stmt = $conn->prepare("DELETE FROM comments WHERE id = ?");
     $stmt->bind_param("i", $comment_id);
     

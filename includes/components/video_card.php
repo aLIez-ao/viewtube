@@ -5,13 +5,12 @@ if (!isset($video)) return;
 <div class="video-card">
     <a href="watch.php?id=<?php echo $video['id']; ?>">
         <div class="thumbnail-container">
-            <!-- Usamos la URL guardada o generamos una fallback -->
+            <!-- Usa la URL guardada o generamos una fallback -->
             <?php
             $thumb = !empty($video['thumbnail_url']) ? $video['thumbnail_url'] : "https://img.youtube.com/vi/{$video['youtube_id']}/mqdefault.jpg";
             ?>
             <img src="<?php echo $thumb; ?>" alt="Miniatura" loading="lazy">
 
-            <!-- Duración formateada (ej. 10:30) -->
             <span class="duration-badge"><?php echo formatDuration($video['duration']); ?></span>
         </div>
     </a>
@@ -19,7 +18,7 @@ if (!isset($video)) return;
     <div class="video-info">
         <div class="channel-avatar">
             <a href="#!">
-                <!-- Avatar del usuario dueño del canal -->
+                <!-- Avatar del usuario -->
                 <img src="https://ui-avatars.com/api/?name=<?php echo urlencode($video['channel_name']); ?>&background=random&color=fff&size=64" alt="Avatar">
             </a>
             <a href="channel.php?id=<?php echo $video['channel_id']; ?>" style="color: inherit;">
@@ -34,7 +33,7 @@ if (!isset($video)) return;
             </a>
 
             <a href="#!" class="channel-name">
-                <?php echo $video['channel_name']; ?> <!-- Ahora usamos el nombre del CANAL -->
+                <?php echo $video['channel_name']; ?>
                 <i class="material-icons tiny" style="vertical-align: middle; font-size: 14px; margin-left: 2px;">check_circle</i>
             </a>
 

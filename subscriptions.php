@@ -1,9 +1,8 @@
 <?php
-// subscriptions.php
 require_once 'config/db.php';
 require_once 'includes/functions.php';
 
-// 1. Verificar sesión (Obligatorio)
+// Verificar sesión (Obligatorio)
 if (!isset($_SESSION['user_id'])) {
     // Si no está logueado, redirigir al login o mostrar pantalla de "Inicia sesión"
     header("Location: login.php");
@@ -14,7 +13,7 @@ $user_id = $_SESSION['user_id'];
 $page_layout = 'guide'; 
 $APP_NAME = "Suscripciones"; // Título de la pestaña
 
-// 2. QUERY: Videos de canales suscritos
+// QUERY: Videos de canales suscritos
 // Unimos videos -> canales -> suscripciones
 $sql = "SELECT 
             v.*, 

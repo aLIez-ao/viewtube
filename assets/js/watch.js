@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
   console.log("WATCH.JS: Cargado.");
 
-  // --- ELEMENTOS EXISTENTES ---
+  // ELEMENTOS EXISTENTES
   const subscribeBtn = document.getElementById("subscribeBtn");
   const unsubscribeModal = document.getElementById("unsubscribeModal");
   const confirmUnsubBtn = document.getElementById("confirmUnsubscribe");
@@ -9,14 +9,14 @@ document.addEventListener("DOMContentLoaded", function () {
   const dislikeBtn = document.getElementById("dislikeBtn");
   const likeCountSpan = document.getElementById("likeCount");
 
-  // --- ELEMENTOS COMPARTIR ---
+  // ELEMENTOS COMPARTIR
   const shareBtn = document.getElementById("shareBtn");
   const shareModal = document.getElementById("shareModal");
   const shareUrlInput = document.getElementById("shareUrlInput");
   const copyLinkBtn = document.getElementById("copyLinkBtn");
   const startAtCheckbox = document.getElementById("startAtCheckbox");
 
-  // --- ELEMENTOS GUARDAR EN LISTA (NUEVO) ---
+  // ELEMENTOS GUARDAR EN LISTA
   const saveBtn = document.getElementById("saveBtn");
   const saveModal = document.getElementById("saveModal");
   const playlistsList = document.getElementById("playlistsList");
@@ -43,7 +43,7 @@ document.addEventListener("DOMContentLoaded", function () {
     ? shareUrlInput.value
     : window.location.href;
 
-  // --- ELEMENTOS DE COMENTARIOS ---
+  // ELEMENTOS DE COMENTARIOS
   const commentInput = document.getElementById("commentInput");
   const submitCommentBtn = document.getElementById("submitCommentBtn");
   const commentsList = document.querySelector(".comments-list");
@@ -55,14 +55,14 @@ document.addEventListener("DOMContentLoaded", function () {
     ? commentFormActions.querySelector("button:first-child")
     : null;
 
-  // --- UTILIDADES ---
+  // UTILIDADES
   const M_AVAILABLE = typeof M !== "undefined";
   function showMessage(msg) {
     if (M_AVAILABLE) M.toast({ html: msg });
     else console.log("Toast:", msg);
   }
 
-  // --- INICIALIZAR MODALES ---
+  // INICIALIZAR MODALES
   let modalUnsubInstance = null;
   let modalShareInstance = null;
   let modalSaveInstance = null;
@@ -108,9 +108,7 @@ document.addEventListener("DOMContentLoaded", function () {
       shareEmail.href = `mailto:?subject=${text}&body=${encodedUrl}`;
   }
 
-  // =================================================
-  // 1. LÓGICA DE COMENTARIOS
-  // =================================================
+  // LÓGICA DE COMENTARIOS
   let activeReplyForm = null;
 
   function setupCommentForm(formContainer) {
@@ -460,9 +458,7 @@ document.addEventListener("DOMContentLoaded", function () {
       });
   }
 
-  // =================================================
-  // 3. LÓGICA COMPARTIR
-  // =================================================
+  // LÓGICA COMPARTIR
   if (shareBtn && modalShareInstance) {
     shareBtn.addEventListener("click", function (e) {
       e.preventDefault();
@@ -490,9 +486,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  // =================================================
-  // 4. LÓGICA SUSCRIPCIÓN Y LIKES VIDEO
-  // =================================================
+  // LÓGICA SUSCRIPCIÓN Y LIKES VIDEO
   if (subscribeBtn) {
     subscribeBtn.addEventListener("click", (e) => {
       e.preventDefault();
@@ -592,10 +586,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  // =================================================
-  // 5. LÓGICA DE GUARDAR EN LISTA (PLAYLISTS)
-  // =================================================
-
+  // LÓGICA DE GUARDAR EN PLAYLISTS
   if (saveBtn && modalSaveInstance) {
     saveBtn.addEventListener("click", function (e) {
       e.preventDefault();

@@ -1,5 +1,4 @@
 <?php
-// actions/subscribe.php
 require_once '../config/db.php';
 
 // Buffer para limpieza
@@ -72,7 +71,7 @@ try {
 
     $conn->commit();
 
-    // LIMPIEZA
+    // limpieza
     ob_end_clean();
 
     echo json_encode([

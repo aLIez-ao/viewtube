@@ -1,10 +1,10 @@
 <?php
 require_once '../config/db.php';
 
-// 1. Verificar si se envió el formulario
+// Verificar si se envió el formulario
 if (isset($_POST['btn_login'])) {
     
-    // 2. Limpiar datos
+    // Limpiar datos
     $email = trim($_POST['email']);
     $password = trim($_POST['password']);
 
@@ -14,20 +14,19 @@ if (isset($_POST['btn_login'])) {
         exit();
     }
 
-    // 3. Buscar usuario por email
-    // Usamos Prepared Statements para evitar Hackeos SQL Injection
+    // Buscar usuario por email y evitar SQL Injection
     $stmt = $conn->prepare("SELECT id, username, password, avatar FROM users WHERE email = ?");
     $stmt->bind_param("s", $email);
     $stmt->execute();
     $result = $stmt->get_result();
 
+    // El usuario existe, verifiquemos contraseña
     if ($row = $result->fetch_assoc()) {
-        // El usuario existe, verifiquemos contraseña
         
-        // A. Verificación Estándar (Hash)
+        // Verificación Estándar (Hash)
         $check_password = password_verify($password, $row['password']);
 
-        // B. Verificación de Rescate (Solo para el usuario Admin inicial)
+        // Verificación de Rescate (Solo para el usuario Admin inicial)
         // Si la contraseña en BD es '123456' (texto plano) y coincide con lo escrito:
         if ($password === $row['password']) {
             $check_password = true; 
@@ -36,9 +35,8 @@ if (isset($_POST['btn_login'])) {
             // $conn->query("UPDATE users SET password = '$new_hash' WHERE id = " . $row['id']);
         }
 
+        // LOGIN EXITOSO
         if ($check_password) {
-            // ¡LOGIN EXITOSO!
-            
             // Guardar datos en sesión
             $_SESSION['user_id'] = $row['id'];
             $_SESSION['username'] = $row['username'];

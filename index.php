@@ -1,10 +1,8 @@
 <?php 
-// index.php
 require_once 'config/db.php';
-require_once 'includes/functions.php'; // Importante: cargar funciones nuevas
+require_once 'includes/functions.php';
 require_once 'includes/header.php'; 
 
-// NUEVA CONSULTA ADAPTADA A TU DB
 // Seleccionamos datos del video, del canal (nombre) y del usuario (avatar)
 $sql = "SELECT 
             v.*, 

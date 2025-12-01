@@ -1,12 +1,8 @@
 <?php
-/* includes/functions.php */
-
 function formatDuration($seconds) {
     if ($seconds < 3600) {
-        // Minutos:Segundos (ej. 05:30)
         return gmdate("i:s", $seconds);
     } else {
-        // Horas:Minutos:Segundos (ej. 01:05:30)
         return gmdate("H:i:s", $seconds);
     }
 }

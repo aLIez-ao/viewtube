@@ -1,10 +1,8 @@
 <?php
-/* includes/components/user_menu.php */
-
 // Seguridad: Si no hay usuario logueado, no mostramos nada
 if (!isset($_SESSION['user_id'])) return;
 
-// 1. Lógica del Avatar
+// Lógica del Avatar
 $avatarUrl = $_SESSION['avatar'];
 if ($avatarUrl === 'default.png') {
     $avatarUrl = "https://ui-avatars.com/api/?name=" . urlencode($_SESSION['username']) . "&background=random&color=fff&size=128";

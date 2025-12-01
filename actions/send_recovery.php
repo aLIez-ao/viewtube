@@ -1,28 +1,26 @@
 <?php
-// actions/send_recovery.php
 require_once '../config/db.php';
 
 if (isset($_POST['btn_recover'])) {
     $email = trim($_POST['email']);
 
-    // 1. Verificar si el email existe
+    // Verificar si el email existe
     $stmt = $conn->prepare("SELECT id, username FROM users WHERE email = ?");
     $stmt->bind_param("s", $email);
     $stmt->execute();
     $result = $stmt->get_result();
 
     if ($row = $result->fetch_assoc()) {
-        // 2. Generar Token Único y Expiración (1 hora)
+        // Generar Token Único. Expiración 1 hora
         $token = bin2hex(random_bytes(32)); 
-        // Expires: Hora actual + 1 hora (3600 seg)
         $expires = date("Y-m-d H:i:s", time() + 3600);
 
-        // 3. Guardar en BD
+        // Guardar en BD
         $update = $conn->prepare("UPDATE users SET reset_token = ?, reset_expires = ? WHERE id = ?");
         $update->bind_param("ssi", $token, $expires, $row['id']);
         
         if ($update->execute()) {
-            // --- SIMULACIÓN DE ENVÍO DE EMAIL ---
+            // ========== SIMULACIÓN DE ENVÍO DE EMAIL ============
             // En un servidor real, aquí usarías mail() o PHPMailer.
             // Para localhost, mostraremos el link en pantalla.
             
@@ -41,7 +39,7 @@ if (isset($_POST['btn_recover'])) {
             header("Location: ../forgot_password.php?error=db_error");
         }
     } else {
-        // Por seguridad, no decimos si el correo existe o no, pero para dev:
+        // Por seguridad, no dece si el correo existe o no, pero para dev:
         header("Location: ../forgot_password.php?error=not_found");
     }
 }

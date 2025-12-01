@@ -1,5 +1,4 @@
 <?php
-// actions/playlist.php
 require_once '../config/db.php';
 
 header('Content-Type: application/json');
@@ -13,7 +12,7 @@ $user_id = $_SESSION['user_id'];
 $data = json_decode(file_get_contents('php://input'), true);
 $action = $data['action'] ?? '';
 
-// 1. OBTENER LISTAS DEL USUARIO (Y si contienen el video actual)
+// Obtener listas
 if ($action === 'get_playlists') {
     $video_id = (int)($data['video_id'] ?? 0);
     
@@ -42,7 +41,7 @@ if ($action === 'get_playlists') {
     echo json_encode(['success' => true, 'playlists' => $playlists]);
 }
 
-// 2. AGREGAR / QUITAR VIDEO DE UNA LISTA
+// agregar/Quitar de lista
 elseif ($action === 'toggle_video') {
     $playlist_id = (int)$data['playlist_id'];
     $video_id = (int)$data['video_id'];
@@ -72,7 +71,7 @@ elseif ($action === 'toggle_video') {
     echo json_encode(['success' => true]);
 }
 
-// 3. CREAR NUEVA LISTA
+// Crear lista
 elseif ($action === 'create') {
     $title = trim($data['title'] ?? '');
     $video_id = (int)($data['video_id'] ?? 0);

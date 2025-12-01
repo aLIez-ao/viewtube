@@ -1,9 +1,9 @@
-# Activar el motor de reescritura
+#
 
-## RewriteEngine On
+## Activar el motor de reescritura
 
-## --- MANEJO DE ERRORES 404 (Página no encontrada) ---
+RewriteEngine On
 
-ErrorDocument 404 /proyecto-final-web/construction.php
+## Manejo de errores 404 (Ruta relativa a la raíz del dominio)
 
-## ErrorDocument 404 /construction.php
+ErrorDocument 404 /construction.php

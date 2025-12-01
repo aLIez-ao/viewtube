@@ -1,5 +1,4 @@
 <?php
-// channel.php
 require_once 'config/db.php';
 require_once 'includes/functions.php';
 
@@ -11,7 +10,7 @@ if (!isset($_GET['id']) || empty($_GET['id'])) {
 $channel_id = (int)$_GET['id'];
 $current_user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 0;
 
-// 1. OBTENER INFORMACIÓN DEL CANAL
+// OBTENER INFORMACIÓN DEL CANAL
 $sql = "SELECT c.*, u.username, u.avatar 
         FROM channels c 
         JOIN users u ON c.user_id = u.id 
@@ -27,14 +26,14 @@ if ($result->num_rows == 0) {
 }
 $channel = $result->fetch_assoc();
 
-// 2. OBTENER VIDEOS DEL CANAL
+// OBTENER VIDEOS DEL CANAL
 $sql_videos = "SELECT * FROM videos WHERE channel_id = ? ORDER BY created_at DESC";
 $stmt_v = $conn->prepare($sql_videos);
 $stmt_v->bind_param("i", $channel_id);
 $stmt_v->execute();
 $videos_result = $stmt_v->get_result();
 
-// 3. VERIFICAR SUSCRIPCIÓN
+// VERIFICAR SUSCRIPCIÓN
 $is_subscribed = false;
 if ($current_user_id > 0) {
     $check_sub = $conn->query("SELECT id FROM subscriptions WHERE user_id = $current_user_id AND channel_id = $channel_id");

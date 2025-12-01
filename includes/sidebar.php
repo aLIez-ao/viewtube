@@ -1,5 +1,4 @@
 <?php
-// includes/sidebar.php
 ?>
 <ul class="sidenav custom-sidebar">
 

@@ -1,5 +1,4 @@
 <?php
-// playlists.php
 require_once 'config/db.php';
 require_once 'includes/functions.php';
 
@@ -12,7 +11,7 @@ $user_id = $_SESSION['user_id'];
 $page_layout = 'guide';
 $APP_NAME = "Listas de reproducción"; 
 
-// 1. OBTENER DATOS DE "VIDEOS QUE ME GUSTAN"
+// OBTENER DATOS DE "VIDEOS QUE ME GUSTAN"
 // Necesitamos el conteo y la miniatura del último video likeado
 $sql_liked = "SELECT 
                 (SELECT COUNT(*) FROM likes WHERE user_id = ? AND type = 'like') as count,
@@ -28,7 +27,7 @@ $stmt_l->execute();
 $liked_data = $stmt_l->get_result()->fetch_assoc();
 
 
-// 2. OBTENER LISTAS PERSONALIZADAS DEL USUARIO
+// OBTENER LISTAS PERSONALIZADAS DEL USUARIO
 $sql = "SELECT 
             p.id, 
             p.title, 
@@ -63,7 +62,7 @@ require_once 'includes/header.php';
 
     <div class="playlists-grid">
         
-        <!-- 1. TARJETA "VIDEOS QUE ME GUSTAN" (Siempre aparece si tienes likes) -->
+        <!-- TARJETA "VIDEOS QUE ME GUSTAN" (Siempre aparece si tienes likes) -->
         <?php if ($liked_data['count'] > 0): ?>
             <?php 
                 $likedThumb = !empty($liked_data['last_thumb']) ? $liked_data['last_thumb'] : BASE_URL . 'assets/img/no-video.png';
@@ -89,7 +88,7 @@ require_once 'includes/header.php';
         <?php endif; ?>
 
 
-        <!-- 2. LISTAS PERSONALIZADAS -->
+        <!-- LISTAS PERSONALIZADAS -->
         <?php if ($result && $result->num_rows > 0): ?>
             <?php while($playlist = $result->fetch_assoc()): ?>
                 

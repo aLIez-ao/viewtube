@@ -1,8 +1,7 @@
 <?php
-// upload.php
 require_once 'config/db.php';
 
-// 1. Seguridad
+// Seguridad
 if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
     exit();
@@ -10,7 +9,7 @@ if (!isset($_SESSION['user_id'])) {
 
 $user_id = $_SESSION['user_id'];
 
-// 2. Verificar Canal
+// Verificar Canal
 $sql = "SELECT c.id, c.name, u.avatar 
         FROM channels c 
         JOIN users u ON c.user_id = u.id 
@@ -37,6 +36,7 @@ $channel = $res->fetch_assoc();
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/upload.css">
+    <link rel="icon" type="image/svg+xml" href="<?php echo BASE_URL; ?>assets/img/favicon.svg">
 </head>
 <body>
 

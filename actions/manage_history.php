@@ -1,5 +1,4 @@
 <?php
-// actions/manage_history.php
 require_once '../config/db.php';
 
 header('Content-Type: application/json');
@@ -19,7 +18,7 @@ if (!in_array($action, ['clear_all', 'toggle_pause', 'get_status', 'remove_item'
     exit();
 }
 
-// 1. BORRAR TODO EL HISTORIAL
+// Borrar historial
 if ($action === 'clear_all') {
     $stmt = $conn->prepare("DELETE FROM history WHERE user_id = ?");
     $stmt->bind_param("i", $user_id);
@@ -31,7 +30,7 @@ if ($action === 'clear_all') {
     }
 }
 
-// 2. PAUSAR / REANUDAR (Toggle)
+// Pausar/Reanudar (Toggle)
 elseif ($action === 'toggle_pause') {
     $check = $conn->query("SELECT history_paused FROM users WHERE id = $user_id");
     $current = $check->fetch_assoc()['history_paused'];
@@ -51,14 +50,14 @@ elseif ($action === 'toggle_pause') {
     }
 }
 
-// 3. OBTENER ESTADO ACTUAL
+// Obtener estado acural
 elseif ($action === 'get_status') {
     $check = $conn->query("SELECT history_paused FROM users WHERE id = $user_id");
     $paused = (bool)$check->fetch_assoc()['history_paused'];
     echo json_encode(['success' => true, 'paused' => $paused]);
 }
 
-// 4. BORRAR UN SOLO ITEM (NUEVO)
+// Borrar un item
 elseif ($action === 'remove_item') {
     $video_id = isset($data['video_id']) ? (int)$data['video_id'] : 0;
     

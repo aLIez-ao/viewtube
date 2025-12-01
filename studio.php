@@ -1,8 +1,7 @@
 <?php
-// studio.php
 require_once 'config/db.php';
 
-// 1. Seguridad: Solo usuarios logueados
+// Seguridad: Solo usuarios logueados
 if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
     exit();
@@ -10,7 +9,7 @@ if (!isset($_SESSION['user_id'])) {
 
 $user_id = $_SESSION['user_id'];
 
-// 2. Verificar si el usuario YA tiene un canal
+// Verificar si el usuario YA tiene un canal
 $sql = "SELECT * FROM channels WHERE user_id = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $user_id);
@@ -41,15 +40,13 @@ $user_avatar = $user['avatar'] === 'default.png'
     <!-- Fuentes e Iconos -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-    
+    <link rel="icon" type="image/svg+xml" href="<?php echo BASE_URL; ?>assets/img/favicon.svg">
     <!-- CSS Específico de Studio (Sin dependencias del resto del sitio) -->
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/studio.css">
 </head>
 <body class="<?php echo $has_channel ? 'mode-dashboard' : 'mode-creation'; ?>">
 
-    <!-- ========================================== -->
-    <!-- CASO A: USUARIO SIN CANAL (CREACIÓN)       -->
-    <!-- ========================================== -->
+    <!-- USUARIO SIN CANAL (CREACIÓN)       -->
     <?php if (!$has_channel): ?>
         
         <div class="creation-container">
@@ -89,9 +86,7 @@ $user_avatar = $user['avatar'] === 'default.png'
             </div>
         </div>
 
-    <!-- ========================================== -->
-    <!-- CASO B: DASHBOARD (USUARIO CON CANAL)      -->
-    <!-- ========================================== -->
+    <!-- DASHBOARD (USUARIO CON CANAL)      -->
     <?php else: ?>
 
         <!-- Header de Studio -->

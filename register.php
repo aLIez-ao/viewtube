@@ -1,5 +1,4 @@
 <?php
-// register.php
 require_once 'config/db.php';
 
 // Si el usuario ya inició sesión, lo mandamos al inicio
@@ -14,7 +13,7 @@ if (isset($_SESSION['user_id'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crear cuenta - <?php echo $APP_NAME; ?></title>
-    
+    <link rel="icon" type="image/svg+xml" href="<?php echo BASE_URL; ?>assets/img/favicon.svg">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/login.css">
 </head>

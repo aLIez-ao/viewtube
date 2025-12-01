@@ -1,14 +1,13 @@
 <?php
-// actions/rate_video.php
 require_once '../config/db.php';
 
-// Iniciamos el buffer de salida para atrapar cualquier espacio en blanco accidental
+// Iniciar el buffer de salida para atrapar cualquier espacio en blanco accidental
 ob_start();
 
 header('Content-Type: application/json');
 
 if (!isset($_SESSION['user_id'])) {
-    ob_clean(); // Limpiar antes de enviar
+    ob_clean();
     echo json_encode(['success' => false, 'error' => 'auth_required']);
     exit();
 }
@@ -57,7 +56,7 @@ try {
         $action_result = 'added';
     }
 
-    // CONTAR
+    // contar
     $res_likes = $conn->query("SELECT COUNT(*) as c FROM likes WHERE video_id = $video_id AND type = 'like'");
     $res_dislikes = $conn->query("SELECT COUNT(*) as c FROM likes WHERE video_id = $video_id AND type = 'dislike'");
 
@@ -66,8 +65,7 @@ try {
 
     $conn->commit();
 
-    // --- LIMPIEZA FINAL ---
-    // Borramos cualquier texto/html generado antes por error
+    // Borramos cualquier texto/html generado antes
     ob_end_clean(); 
     
     echo json_encode([

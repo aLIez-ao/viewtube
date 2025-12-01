@@ -1,5 +1,4 @@
 <?php
-// playlist.php
 require_once 'config/db.php';
 require_once 'includes/functions.php';
 
@@ -12,7 +11,7 @@ $playlist_id = (int)$_GET['id'];
 $user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 0;
 $page_layout = 'guide'; 
 
-// 1. OBTENER INFO DE LA PLAYLIST
+// OBTENER INFO DE LA PLAYLIST
 // Unimos con users para saber el creador
 $sql_p = "SELECT p.*, u.username, u.avatar 
           FROM playlists p 
@@ -36,7 +35,7 @@ if ($playlist['is_private'] && $playlist['user_id'] != $user_id) {
     exit();
 }
 
-// 2. OBTENER VIDEOS DE LA LISTA
+// OBTENER VIDEOS DE LA LISTA
 $sql_v = "SELECT pv.id as item_id, pv.position,
                  v.id as video_id, v.title, v.description, v.thumbnail_url, v.views, v.duration, v.created_at as video_date,
                  c.name as channel_name, c.id as channel_id

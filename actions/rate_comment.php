@@ -1,8 +1,7 @@
 <?php
-// actions/rate_comment.php
 require_once '../config/db.php';
 
-// Limpieza de buffer por si acaso
+// Limpieza de buffer por defaul
 ob_start();
 header('Content-Type: application/json');
 
@@ -23,7 +22,7 @@ if ($comment_id <= 0 || !in_array($type, ['like', 'dislike'])) {
     exit();
 }
 
-// 1. Verificar voto existente para este COMENTARIO
+// Verificar like existente para este COMENTARIO
 $check = $conn->prepare("SELECT id, type FROM likes WHERE user_id = ? AND comment_id = ?");
 $check->bind_param("ii", $user_id, $comment_id);
 $check->execute();
@@ -36,13 +35,13 @@ $conn->begin_transaction();
 try {
     if ($existing) {
         if ($existing['type'] === $type) {
-            // Quitar voto (Toggle)
+            // Quitar voto
             $del = $conn->prepare("DELETE FROM likes WHERE id = ?");
             $del->bind_param("i", $existing['id']);
             $del->execute();
             $action_result = 'removed';
             
-            // Decrementar contador en tabla comments (si quieres caché)
+            // Decrementar contador en tabla comments
             if($type === 'like') {
                 $conn->query("UPDATE comments SET likes = GREATEST(0, likes - 1) WHERE id = $comment_id");
             }
@@ -73,7 +72,6 @@ try {
         }
     }
 
-    // CONTAR REAL (Para asegurar consistencia)
     $res_likes = $conn->query("SELECT COUNT(*) as c FROM likes WHERE comment_id = $comment_id AND type = 'like'");
     $count_likes = ($res_likes) ? intval($res_likes->fetch_assoc()['c']) : 0;
 

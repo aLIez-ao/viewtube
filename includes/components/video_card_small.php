@@ -1,5 +1,4 @@
 <?php
-/* includes/components/video_card_small.php */
 if (!isset($related)) return; 
 ?>
 <a href="watch.php?id=<?php echo $related['id']; ?>" class="related-video-card">
@@ -16,7 +15,7 @@ if (!isset($related)) return;
     <div class="related-info">
         <span class="related-title"><?php echo $related['title']; ?></span>
         
-        <!-- CAMBIO AQUÍ: channel_name en lugar de username -->
+        <!-- channel_name en lugar de username -->
         <span class="related-channel"><?php echo $related['channel_name']; ?></span>
         
         <span class="related-meta">

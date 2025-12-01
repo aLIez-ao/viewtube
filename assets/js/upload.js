@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const btnPublish = document.getElementById("btnPublish");
   const uploadForm = document.getElementById("uploadForm");
 
-  // 1. LÓGICA DE PREVISUALIZACIÓN E ID
+  // LÓGICA DE PREVISUALIZACIÓN E ID
   if (urlInput) {
     urlInput.addEventListener("input", function () {
       const url = this.value.trim();

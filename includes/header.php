@@ -1,5 +1,4 @@
 <?php
-// includes/header.php
 require_once dirname(__DIR__) . '/config/db.php';
 
 if (!isset($APP_NAME)) $APP_NAME = "ViewTube";
@@ -19,6 +18,8 @@ $bodyClass = ($page_layout === 'watch') ? 'layout-watch' : 'layout-guide';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo $APP_NAME; ?></title>
+
+    <link rel="icon" type="image/svg+xml" href="<?php echo BASE_URL; ?>assets/img/favicon.svg">
 
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
